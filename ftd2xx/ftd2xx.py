@@ -217,7 +217,7 @@ class FTD2XX(object):
 
     def purge(self, mask=0):
         if not mask:
-            mask = FT_PURGE_RX | FT_PURGE_TX
+            mask = PURGE_RX | PURGE_TX
         call_ft(_ft.FT_Purge, self.handle, _ft.DWORD(mask))
         return None
 
