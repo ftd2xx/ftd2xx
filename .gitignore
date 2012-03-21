@@ -1,0 +1,4 @@
+*.pyc
+build
+dist
+ftd2xx.egg-info
