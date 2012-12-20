@@ -178,7 +178,7 @@ class FTD2XX(object):
         return None
 
     def setFlowControl(self, flowcontrol, xon=-1, xoff=-1):
-        if flowcontrol == FT_FLOW_XON_XOFF and (xon == -1 or xoff == -1):
+        if flowcontrol == FLOW_XON_XOFF and (xon == -1 or xoff == -1):
             raise ValueError
         call_ft(_ft.FT_SetFlowControl, self.handle,
                 _ft.USHORT(flowcontrol), _ft.UCHAR(xon), _ft.UCHAR(xoff))
