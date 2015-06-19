@@ -81,7 +81,6 @@ def getDeviceInfoDetail(devnum=0):
     h = _ft.FT_HANDLE()
     n = c.c_buffer(MAX_DESCRIPTION_SIZE)
     d = c.c_buffer(MAX_DESCRIPTION_SIZE)
-    createDeviceInfoList()
     call_ft(_ft.FT_GetDeviceInfoDetail, _ft.DWORD(devnum),
             c.byref(f), c.byref(t), c.byref(i), c.byref(l), n, d, c.byref(h))
     return {'index': devnum, 'flags': f.value, 'type': t.value,
@@ -134,7 +133,6 @@ class FTD2XX(object):
         and populate the device info in the instance dictionary."""
         self.handle = handle
         self.status = 1
-        createDeviceInfoList()
         self.__dict__.update(self.getDeviceInfo())
 
     def close(self):
