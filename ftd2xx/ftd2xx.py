@@ -72,8 +72,9 @@ def createDeviceInfoList():
     call_ft(_ft.FT_CreateDeviceInfoList, c.byref(m))
     return m.value
 
-def getDeviceInfoDetail(devnum=0):
-    """Get an entry from the internal device info list. """
+def getDeviceInfoDetail(devnum=0, update=True):
+    """Get an entry from the internal device info list. Set update to
+    False to avoid a slow call to createDeviceInfoList."""
     f = _ft.DWORD()
     t = _ft.DWORD()
     i = _ft.DWORD()
@@ -81,7 +82,8 @@ def getDeviceInfoDetail(devnum=0):
     h = _ft.FT_HANDLE()
     n = c.c_buffer(MAX_DESCRIPTION_SIZE)
     d = c.c_buffer(MAX_DESCRIPTION_SIZE)
-    createDeviceInfoList()
+    # createDeviceInfoList is slow, only run if update is True
+    if update: createDeviceInfoList()
     call_ft(_ft.FT_GetDeviceInfoDetail, _ft.DWORD(devnum),
             c.byref(f), c.byref(t), c.byref(i), c.byref(l), n, d, c.byref(h))
     return {'index': devnum, 'flags': f.value, 'type': t.value,
@@ -129,12 +131,14 @@ else:
 
 class FTD2XX(object):
     """Class for communicating with an FTDI device"""
-    def __init__(self, handle):
+    def __init__(self, handle, update=True):
         """Create an instance of the FTD2XX class with the given device handle
-        and populate the device info in the instance dictionary."""
+        and populate the device info in the instance dictionary. Set
+        update to False to avoid a slow call to createDeviceInfoList."""
         self.handle = handle
         self.status = 1
-        createDeviceInfoList()
+        # createDeviceInfoList is slow, only run if update is True
+        if update: createDeviceInfoList()
         self.__dict__.update(self.getDeviceInfo())
 
     def close(self):
