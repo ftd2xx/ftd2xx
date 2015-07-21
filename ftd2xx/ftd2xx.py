@@ -208,7 +208,7 @@ class FTD2XX(object):
     def getModemStatus(self):
         m = _ft.DWORD()
         call_ft(_ft.FT_GetModemStatus, self.handle, c.byref(m))
-        return None
+        return m.value
 
     def setChars(self, evch, evch_en, erch, erch_en):
         call_ft(_ft.FT_SetChars, self.handle, _ft.UCHAR(evch),
