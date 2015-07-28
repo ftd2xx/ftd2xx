@@ -4,16 +4,17 @@ _pythonic_ way. For full documentation please refer to the FTDI
 Programming Guide. This module is based on Pablo Bleyers d2xx module,
 except this uses ctypes instead of an extension approach.
 """
+from __future__ import absolute_import
 import sys
 
 if sys.platform == 'win32':
-    import _ftd2xx as _ft
+    from . import _ftd2xx as _ft
 elif sys.platform == 'linux2':
-    import _ftd2xx_linux as _ft
+    from . import _ftd2xx_linux as _ft
 elif sys.platform == 'darwin':
-    import _ftd2xx_darwin as _ft
+    from . import _ftd2xx_darwin as _ft
 import ctypes as c
-from defines import *
+from .defines import *
 
 ft_program_data = _ft.ft_program_data
 
@@ -38,7 +39,7 @@ def call_ft(function, *args):
     """Call an FTDI function and check the status. Raise exception on error"""
     status = function(*args)
     if status != _ft.FT_OK:
-        raise DeviceError, status
+        raise DeviceError(status)
 
 def listDevices(flags=0):
     """Return a list of serial numbers(default), descriptions or
