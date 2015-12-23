@@ -35,7 +35,10 @@ _libraries = {}
 
 if sys.platform == 'win32':
     if sys.maxsize > 2**32: # 64-bit
-        _libraries['ftd2xx.dll'] = WinDLL('ftd2xx64.dll')
+        try:
+            _libraries['ftd2xx.dll'] = WinDLL('ftd2xx64.dll')
+        except:
+            _libraries['ftd2xx.dll'] = WinDLL('ftd2xx.dll')
     else: # 32-bit
         _libraries['ftd2xx.dll'] = WinDLL('ftd2xx.dll')
 else:
