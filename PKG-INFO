@@ -1,10 +1,10 @@
 Metadata-Version: 1.0
 Name: ftd2xx
-Version: bzr14
+Version: 0.3.1
 Summary: Python interface to ftd2xx.dll from FTDI using ctypes based on d2xx by Pablo Bleyer
 Home-page: UNKNOWN
 Author: Satya Mishra
-Author-email: qufgmx@gmail.com
+Author-email: satya.devel@gmail.com
 License: BSD
 Description: UNKNOWN
 Keywords: ftd2xx d2xx
