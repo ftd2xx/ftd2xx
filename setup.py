@@ -1,19 +1,9 @@
 from setuptools import setup, find_packages
-import subprocess
-import sys
+# import subprocess
+# import sys
 
-if sys.version_info >= (3, 0):
-    try:
-        from distutils.command.build_py import build_py_2to3 as build_py
-        from distutils.command.build_scripts import build_scripts_2to3 as build_scripts
-    except ImportError:
-        raise ImportError("build_py_2to3 not found in distutils - it is required for Python 3.x")
-    suffix = "-py3k"
-else:
-    from distutils.command.build_py import build_py
-    from distutils.command.build_scripts import build_scripts
-    suffix = ""
-
+from distutils.command.build_py import build_py
+from distutils.command.build_scripts import build_scripts
 
 import os
 mydir = os.path.dirname(__file__)
@@ -39,7 +29,7 @@ with open('README.rst') as f:
     long_description = f.read()
 
 setup(
-    name="ftd2xx" + suffix,
+    name="ftd2xx",
     version=version,
     packages=find_packages(),
     # metadata for upload to PyPI

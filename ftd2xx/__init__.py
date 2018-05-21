@@ -6,9 +6,10 @@ on the object thus returned.
 
 There are a few convinience functions too
 """
+from __future__ import absolute_import
 import sys
 
-from ftd2xx import *
+from .ftd2xx import *
 
 
 __all__ = ['call_ft', 'listDevices', 'getLibraryVersion', \

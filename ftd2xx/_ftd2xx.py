@@ -2,6 +2,7 @@
 # flags '-c -d -k defst -l ftd2xx.dll -o _ftd2xx.py -m ctypes.wintypes ftd2xx.xml'
 import sys
 from ctypes import *
+from ctypes.util import find_library
 
 
 STRING = c_char_p
@@ -34,7 +35,10 @@ else:
 _libraries = {}
 
 if sys.platform == 'win32':
-    _libraries['ftd2xx.dll'] = WinDLL('ftd2xx.dll')
+    if sys.maxsize > 2**32 and find_library('ftd2xx64'): # 64-bit
+        _libraries['ftd2xx.dll'] = WinDLL('ftd2xx64.dll')
+    else: # 32-bit, or 64-bit library with plain name
+        _libraries['ftd2xx.dll'] = WinDLL('ftd2xx.dll')
 else:
     _libraries['ftd2xx.dll'] = CDLL('libftd2xx.so')
 
