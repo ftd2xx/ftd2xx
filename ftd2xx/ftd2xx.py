@@ -5,6 +5,8 @@ Programming Guide. This module is based on Pablo Bleyers d2xx module,
 except this uses ctypes instead of an extension approach.
 """
 from __future__ import absolute_import
+from builtins import range
+from builtins import object
 import sys
 
 if sys.platform == 'win32':
