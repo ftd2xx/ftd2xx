@@ -2,7 +2,6 @@
 
 import unittest
 import ftd2xx
-import ftd2xx._ftd2xx as _ftd2xx
 
 class TestDeviceError(unittest.TestCase):
 
@@ -13,7 +12,7 @@ class TestDeviceError(unittest.TestCase):
         pass
 
     def test__str__(self):
-        self.assert_(str(self.expt) == 'OK')
+        self.assertTrue(str(self.expt) == 'OK')
 
 class TestFTD2XX(unittest.TestCase):
 
@@ -28,10 +27,10 @@ class TestFTD2XX(unittest.TestCase):
 
     def testread(self):
         self.device.setTimeouts(1000, 0)
-        self.assert_(isinstance(self.device.read(1), str))
+        self.assertTrue(isinstance(self.device.read(1), str))
 
     def testwrite(self):
-        self.assert_(isinstance(self.device.write('%c' % 0x0), long))
+        self.assertTrue(isinstance(self.device.write('%c' % 0x0), long))
 
     def testioctl(self):
         pass
@@ -79,13 +78,13 @@ class TestFTD2XX(unittest.TestCase):
         pass
 
     def testgetQueueStatus(self):
-        self.assert_(isinstance(self.device.getQueueStatus(), long))
+        self.assertTrue(isinstance(self.device.getQueueStatus(), long))
 
     def testsetEventNotification(self):
         pass
 
     def testgetStatus(self):
-        self.assert_(isinstance(self.device.getStatus(), tuple))
+        self.assertTrue(isinstance(self.device.getStatus(), tuple))
 
     def testsetBreakOn(self):
         pass
@@ -106,19 +105,19 @@ class TestFTD2XX(unittest.TestCase):
         pass
 
     def testgetLatencyTimer(self):
-        self.assert_(isinstance(self.device.getLatencyTimer(), int))
+        self.assertTrue(isinstance(self.device.getLatencyTimer(), int))
 
     def testsetBitMode(self):
         pass
 
     def testgetBitMode(self):
-        self.assert_(isinstance(self.device.getBitMode(), int))
+        self.assertTrue(isinstance(self.device.getBitMode(), int))
 
     def testsetUSBParameters(self):
         pass
 
     def testgetDeviceInfo(self):
-        self.assert_(isinstance(self.device.getDeviceInfo(), dict))
+        self.assertTrue(isinstance(self.device.getDeviceInfo(), dict))
 
     def teststopInTask(self):
         pass
@@ -136,22 +135,22 @@ class TestFTD2XX(unittest.TestCase):
         pass
 
     def testgetDriverVersion(self):
-        self.assert_(isinstance(self.device.getDriverVersion(), long))
+        self.assertTrue(isinstance(self.device.getDriverVersion(), long))
 
     def testeeProgram(self):
         pass
 
     def testeeRead(self):
-        self.assert_(isinstance(self.device.eeRead(), _ftd2xx.ft_program_data))
+        self.assertTrue(isinstance(self.device.eeRead(), ftd2xx._ft.ft_program_data))
 
     def testeeUASize(self):
-        self.assert_(isinstance(self.device.eeUASize(), long))
+        self.assertTrue(isinstance(self.device.eeUASize(), long))
 
     def testeeUAWrite(self):
         pass
 
     def testeeUARead(self):
-        self.assert_(isinstance(self.device.eeUARead(5), str))
+        self.assertTrue(isinstance(self.device.eeUARead(5), str))
 
 class TestGlobalFunctions(unittest.TestCase):
 
@@ -165,22 +164,22 @@ class TestGlobalFunctions(unittest.TestCase):
         pass
 
     def testlistDevices(self):
-        self.assert_(isinstance(ftd2xx.listDevices(), list))
+        self.assertTrue(isinstance(ftd2xx.listDevices(), list))
 
     def testgetLibraryVersion(self):
-        self.assert_(isinstance(ftd2xx.getLibraryVersion(), long))
+        self.assertTrue(isinstance(ftd2xx.getLibraryVersion(), long))
 
     def testcreateDeviceInfoList(self):
-        self.assert_(isinstance(ftd2xx.createDeviceInfoList(), long))
+        self.assertTrue(isinstance(ftd2xx.createDeviceInfoList(), long))
 
     def testgetDeviceInfoDetail(self):
-        self.assert_(isinstance(ftd2xx.getDeviceInfoDetail(), dict))
+        self.assertTrue(isinstance(ftd2xx.getDeviceInfoDetail(), dict))
 
     def testopen(self):
-        self.assert_(isinstance(ftd2xx.open(), ftd2xx.FTD2XX))
+        self.assertTrue(isinstance(ftd2xx.open(), ftd2xx.FTD2XX))
 
     def testopenEx(self):
-        self.assert_(isinstance(ftd2xx.openEx(ftd2xx.listDevices()[0]), ftd2xx.FTD2XX))
+        self.assertTrue(isinstance(ftd2xx.openEx(ftd2xx.listDevices()[0]), ftd2xx.FTD2XX))
 
     def testw32CreateFile(self):
         pass
