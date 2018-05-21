@@ -34,7 +34,7 @@ setup(
     packages=find_packages(),
     # metadata for upload to PyPI
     author="Satya Mishra",
-    author_email="qufgmx@gmail.com",
+    author_email="satya.devel@gmail.com",
     description="Python interface to ftd2xx.dll from FTDI using ctypes based on d2xx by Pablo Bleyer",
     license="BSD",
     keywords="ftd2xx d2xx ftdi",
@@ -44,4 +44,7 @@ setup(
     long_description=long_description,
     cmdclass = {'build_py': build_py, 'build_scripts': build_scripts},
     # could also include long_description, download_url, classifiers, etc.
+    install_requires=[
+        'future',
+      ],
 )
