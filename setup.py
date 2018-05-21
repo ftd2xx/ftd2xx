@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
-import subprocess
-import sys
+# import subprocess
+# import sys
 
 from distutils.command.build_py import build_py
 from distutils.command.build_scripts import build_scripts
@@ -29,7 +29,7 @@ with open('README.rst') as f:
     long_description = f.read()
 
 setup(
-    name="ftd2xx"
+    name="ftd2xx",
     version=version,
     packages=find_packages(),
     # metadata for upload to PyPI
