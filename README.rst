@@ -2,7 +2,7 @@
 FTD2XX
 ======
 
-Krishna Sudhakar has kindly agreed to continue development. Please see https://github.com/ctrl-shift-esc/ftd2xx.git .
+The previous person who agreed to take over maintenance has become unresponsive. I am calling this the official repo until I find a new maintainer.
 
 ftd2xx is a simple python wrapper around the `D2XX DLL`_ from FTDI using
 ctypes. It is based on Pablo Bleyer Kocik's d2xx_ extension.
