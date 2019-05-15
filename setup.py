@@ -1,3 +1,4 @@
+from __future__ import print_function
 from setuptools import setup, find_packages
 # import subprocess
 # import sys
@@ -20,7 +21,7 @@ if os.path.exists(os.path.join(mydir, '.bzr')):
     else:
         version = 'bzr%s' % revno
     f = open(os.path.join(mydir, 'myversion.txt'), 'w')
-    print >> f, "version = %s" % version
+    print("version = %s" % version, file=f)
     f.close()
 else:
     version = open(os.path.join(mydir, 'myversion.txt'), 'rU').read().strip()
