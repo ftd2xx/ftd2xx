@@ -35,10 +35,17 @@ else:
 _libraries = {}
 
 if sys.platform == 'win32':
-    if sys.maxsize > 2**32 and find_library('ftd2xx64'): # 64-bit
+    try:
         _libraries['ftd2xx.dll'] = WinDLL('ftd2xx64.dll')
-    else: # 32-bit, or 64-bit library with plain name
-        _libraries['ftd2xx.dll'] = WinDLL('ftd2xx.dll')
+    except OSError: # 32-bit, or 64-bit library with plain name
+        try:
+            _libraries['ftd2xx.dll'] = WinDLL('ftd2xx.dll')
+        except OSError as e:
+            if e.winerror == 126:
+                sys.stderr.write('Unable to find D2XX DLL. Please make sure ftd2xx.dll or ftd2xx64.dll is in the path\n')
+                sys.exit(1)
+            else:
+                raise
 else:
     _libraries['ftd2xx.dll'] = CDLL('libftd2xx.so')
 
