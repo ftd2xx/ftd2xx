@@ -3,3 +3,4 @@ build
 dist
 ftd2xx.egg-info/
 ftd2xx_py3k.egg-info/
+*.bak
