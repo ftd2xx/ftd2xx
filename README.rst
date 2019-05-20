@@ -3,7 +3,12 @@ FTD2XX
 ======
 
 ftd2xx is a simple python wrapper around the `D2XX DLL`_ from FTDI using
-ctypes. It is based on Pablo Bleyer Kocik's d2xx_ extension.
+ctypes. The API based on Pablo Bleyer Kocik's d2xx_ extension.
+
+Version 1.1.0 is compatible with Python 3. Please ensure you have FTDI
+drivers installed or available where the linker looks for shared
+libraries (e.g., PATH on windows, LD_LIBRARY_PATH or standard library
+directories on Linux)
 
 I don't have time to maintain this project, so I am looking for a maintainer. 
 

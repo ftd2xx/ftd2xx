@@ -52,6 +52,6 @@ setup(
     test_suite="ftd2xx.tests.t_ftd2xx",
     cmdclass = {'build_py': build_py, 'build_scripts': build_scripts},
     # could also include long_description, download_url, classifiers, etc.
-    install_requires=(['future'] +
-                      ['pywin32'] if sys.platform == 'win32' else [])
+    install_requires=(['future',
+                       'pywin32; platform_system == "Windows"'])
 )
