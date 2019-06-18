@@ -341,6 +341,12 @@ class FTD2XX(object):
         call_ft(_ft.FT_GetDriverVersion, self.handle, c.byref(drvver))
         return drvver.value
 
+    def getComPortNumber(self):
+        """Return a long representing the COM port number"""
+        m = _ft.LONG()
+        call_ft(_ft.FT_GetComPortNumber, self.handle, c.byref(m))
+        return m.value
+
     def eeProgram(self, progdata=None, *args, **kwds):
         """Program the EEPROM with custom data. If SerialNumber is null, a new
         serial number is generated from ManufacturerId"""

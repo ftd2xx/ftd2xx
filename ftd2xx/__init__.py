@@ -4,7 +4,7 @@ Control FTDI USB chips.
 Open a handle using ftd2xx.open or ftd2xx.openEx and use the methods
 on the object thus returned.
 
-There are a few convinience functions too
+There are a few convenience functions too
 """
 from __future__ import absolute_import
 import sys
