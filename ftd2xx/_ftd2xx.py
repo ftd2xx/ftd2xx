@@ -42,8 +42,9 @@ if sys.platform == 'win32':
             _libraries['ftd2xx.dll'] = WinDLL('ftd2xx.dll')
         except OSError as e:
             if e.winerror == 126:
-                sys.stderr.write('Unable to find D2XX DLL. Please make sure ftd2xx.dll or ftd2xx64.dll is in the path\n')
-                sys.exit(1)
+                error_message = e.args[1] + 'Unable to find D2XX DLL. Please make sure ftd2xx.dll or ftd2xx64.dll is in the path.'
+                e.args = (e.args[0], error_message) + e.args[2:]
+                raise e
             else:
                 raise
 else:
