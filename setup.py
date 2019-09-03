@@ -10,22 +10,8 @@ import os
 import sys
 mydir = os.path.dirname(__file__)
 
-if os.path.exists(os.path.join(mydir, '.bzr')):
-
-    from bzrlib.branch import Branch
-    branch = Branch.open_containing('.')[0]
-    revno = branch.revno()
-    revid = branch.get_rev_id(revno)
-    rtagdict  = branch.tags.get_reverse_tag_dict()
-    if revid in rtagdict:
-        version = rtagdict[revid][0]
-    else:
-        version = 'bzr%s' % revno
-    f = open(os.path.join(mydir, 'myversion.txt'), 'w')
-    print("version = %s" % version, file=f)
-    f.close()
-else:
-    version = open(os.path.join(mydir, 'myversion.txt'), 'r').read().strip()
+with open(os.path.join(mydir, 'myversion.txt'), 'r') as f:
+    version = f.read().strip()
 
 with open('README.rst') as f:
     long_description = f.read()
