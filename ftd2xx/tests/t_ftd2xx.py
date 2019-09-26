@@ -154,10 +154,6 @@ class TestFTD2XX(unittest.TestCase):
     def testeeUARead(self):
         self.assertTrue(isinstance(self.device.eeUARead(5), bytes))
 
-    def testGetComPortNumber(self):
-        self.assertTrue(isinstance(self.device.getComPortNumber(), int))
-
-
 class TestGlobalFunctions(unittest.TestCase):
 
     def setUp(self):
