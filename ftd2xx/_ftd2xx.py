@@ -89,6 +89,7 @@ INT = c_int
 LPTSTR = STRING
 LPDWORD = POINTER(DWORD)
 LPWORD = POINTER(WORD)
+LPLONG = POINTER(LONG)
 PULONG = POINTER(ULONG)
 LPVOID = PVOID
 VOID = None
@@ -879,6 +880,14 @@ FT_GetLibraryVersion.argtypes = [LPDWORD]
 FT_GetLibraryVersion.__doc__ = \
 """FT_STATUS FT_GetLibraryVersion(LPDWORD lpdwVersion)
 ftd2xx.h:870"""
+# ftd2xx.h 899
+FT_GetComPortNumber = _libraries['ftd2xx.dll'].FT_GetComPortNumber
+FT_GetComPortNumber.restype = FT_STATUS
+# FT_GetComPortNumber(ftHandle, lpdwComPortNumber)
+FT_GetComPortNumber.argtypes = [FT_HANDLE, LPLONG]
+FT_GetComPortNumber.__doc__ = \
+"""FT_STATUS FT_GetComPortNumber(FT_HANDLE ftHandle, LPLONG lpdwComPortNumber)
+ftd2xx.h:899"""
 __all__ = ['FT_DEVICE_232R', 'FT_STATUS', 'FT_GetLibraryVersion',
            'VOID', 'FT_GetLatencyTimer', 'FT_EE_ProgramEx',
            'FT_SetEventNotification', 'FT_GetDeviceInfoList',
@@ -930,4 +939,4 @@ __all__ = ['FT_DEVICE_232R', 'FT_STATUS', 'FT_GetLibraryVersion',
            'FT_W32_SetCommState', 'FT_INVALID_BAUD_RATE',
            'FT_SetWaitMask', 'FT_EE_UASize', 'FT_DEVICE_UNKNOWN',
            'FT_DEVICE', 'FT_OTHER_ERROR', 'ft_program_data', 'PVOID',
-           'FT_W32_SetCommMask']
+           'FT_W32_SetCommMask', 'LPLONG', 'FT_GetComPortNumber']
