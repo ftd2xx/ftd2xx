@@ -10,7 +10,7 @@ from __future__ import absolute_import
 import sys
 
 from .ftd2xx import *
-
+from .defines import *
 
 __all__ = ['call_ft', 'listDevices', 'getLibraryVersion', \
            'createDeviceInfoList', 'getDeviceInfoDetail', 'open', \
