@@ -1505,13 +1505,16 @@ tzset.__doc__ = \
 """void tzset()
 /usr/include/time.h:283"""
 # /usr/include/time.h 294
-stime = _libraries['libftd2xx.so'].stime
-stime.restype = c_int
-# stime(__when)
-stime.argtypes = [POINTER(time_t)]
-stime.__doc__ = \
-"""int stime(unknown * __when)
-/usr/include/time.h:294"""
+try:
+    stime = _libraries['libftd2xx.so'].stime
+    stime.restype = c_int
+    # stime(__when)
+    stime.argtypes = [POINTER(time_t)]
+    stime.__doc__ = \
+    """int stime(unknown * __when)
+    /usr/include/time.h:294"""
+except AttributeError:
+    pass
 # /usr/include/time.h 309
 timegm = _libraries['libftd2xx.so'].timegm
 timegm.restype = time_t
