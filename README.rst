@@ -12,11 +12,11 @@ directories on Linux)
 
 I don't have time to maintain this project, so I am looking for a maintainer. 
 
-There is another library by Ben Bass called pylibftdi_ that may fit your needs better.
+There is another library by pyftdi_ that looks more actively maintained, has support for newer device, and may fit your needs better.
 
 Also, Jeremy Bentham wrote a blog_ about using this library.
 
 .. _d2xx: http://bleyer.org/pyusb/
-.. _pylibftdi: https://bitbucket.org/codedstructure/pylibftdi
+.. _pyftdi: https://github.com/eblot/pyftdi
 .. _D2XX DLL: http://www.ftdichip.com/Drivers/D2XX.htm
 .. _blog: https://iosoft.blog/2018/12/02/ftdi-python-part-1/
