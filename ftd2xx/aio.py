@@ -1,5 +1,5 @@
 from .defines import *
-from .ftd2xx import BaseFTD2XX
+from .ftd2xx import BaseFTD2XX, _ft
 
 
 class FTD2XX(BaseFTD2XX):
