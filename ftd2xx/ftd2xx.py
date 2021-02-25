@@ -132,7 +132,7 @@ else:
         call_ft(_ft.FT_SetVIDPID, _ft.DWORD(vid), _ft.DWORD(pid))
         return None
 
-class FTD2XX(object):
+class BaseFTD2XX(object):
     """Class for communicating with an FTDI device"""
     def __init__(self, handle, update=True):
         """Create an instance of the FTD2XX class with the given device handle
@@ -149,7 +149,7 @@ class FTD2XX(object):
         call_ft(_ft.FT_Close, self.handle)
         self.status = 0
 
-    def read(self, nchars, raw=True):
+    def _read(self, nchars, raw=True):
         """Read up to nchars bytes of data from the device. Can return fewer if
         timedout. Use getQueueStatus to find how many bytes are available"""
         b_read = _ft.DWORD()
@@ -403,6 +403,10 @@ class FTD2XX(object):
         call_ft(_ft.FT_EE_UARead, self.handle, c.cast(buf, _ft.PUCHAR),
                 b_to_read, c.byref(b_read))
         return buf.value[:b_read.value]
+    
+class FTD2XX(BaseFTD2XX):
+    def read(self, nchars, raw=True):
+        return self._read(nchars, raw)
 
 __all__ = ['call_ft', 'listDevices', 'getLibraryVersion', \
            'createDeviceInfoList', 'getDeviceInfoDetail', 'open', \
