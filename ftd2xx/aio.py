@@ -1,4 +1,4 @@
-from .ftd2xx import BaseFTD2XX
+from .ftd2xx import *
 
 class FTD2XX(BaseFTD2XX):
   async def read(self, nchars: int, raw=True):
