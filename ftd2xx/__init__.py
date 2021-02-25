@@ -10,12 +10,14 @@ from __future__ import absolute_import
 import sys
 
 from .ftd2xx import *
+from . import aio
 
 
 __all__ = ['call_ft', 'listDevices', 'getLibraryVersion', \
            'createDeviceInfoList', 'getDeviceInfoDetail', 'open', \
            'openEx', 'FTD2XX',  \
-           'DeviceError', 'ft_program_data']
+           'DeviceError', 'ft_program_data', \
+           'aio']
 if sys.platform == 'win32':
     __all__ += ['w32CreateFile']
 else:
