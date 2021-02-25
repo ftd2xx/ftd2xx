@@ -1,3 +1,4 @@
+import asyncio
 import ctypes as c
 from .defines import *
 from .ftd2xx import *
