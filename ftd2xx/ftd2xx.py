@@ -404,6 +404,10 @@ class BaseFTD2XX(object):
                 b_to_read, c.byref(b_read))
         return buf.value[:b_read.value]
     
+    def __enter__(self): return self
+    
+    def __exit__(self, exc_type, exc_value, exc_traceback): self.close()
+    
 class FTD2XX(BaseFTD2XX):
     def read(self, nchars, raw=True):
         return self._read(nchars, raw)
