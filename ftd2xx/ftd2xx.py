@@ -7,6 +7,7 @@ except this uses ctypes instead of an extension approach.
 from __future__ import absolute_import
 from builtins import range
 from builtins import object
+from contextlib import AbstractContextManager
 import sys
 
 if sys.platform == 'win32':
@@ -132,7 +133,7 @@ else:
         call_ft(_ft.FT_SetVIDPID, _ft.DWORD(vid), _ft.DWORD(pid))
         return None
 
-class BaseFTD2XX(object):
+class BaseFTD2XX(object, AbstractContextManager):
     """Class for communicating with an FTDI device"""
     def __init__(self, handle, update=True):
         """Create an instance of the FTD2XX class with the given device handle
@@ -403,6 +404,8 @@ class BaseFTD2XX(object):
         call_ft(_ft.FT_EE_UARead, self.handle, c.cast(buf, _ft.PUCHAR),
                 b_to_read, c.byref(b_read))
         return buf.value[:b_read.value]
+    
+    def __exit__(self, exc_type, exc_value, exc_traceback): self.close()
     
 class FTD2XX(BaseFTD2XX):
     def read(self, nchars, raw=True):
