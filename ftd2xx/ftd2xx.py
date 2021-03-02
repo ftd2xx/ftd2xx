@@ -133,7 +133,7 @@ else:
         call_ft(_ft.FT_SetVIDPID, _ft.DWORD(vid), _ft.DWORD(pid))
         return None
 
-class BaseFTD2XX(object, AbstractContextManager):
+class BaseFTD2XX(AbstractContextManager):
     """Class for communicating with an FTDI device"""
     def __init__(self, handle, update=True):
         """Create an instance of the FTD2XX class with the given device handle
