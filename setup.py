@@ -1,6 +1,8 @@
 from __future__ import print_function
 from setuptools import setup, find_packages
-# import subprocess
+
+import subprocess
+
 # import sys
 
 from distutils.command.build_py import build_py
@@ -8,12 +10,25 @@ from distutils.command.build_scripts import build_scripts
 
 import os
 import sys
+
 mydir = os.path.dirname(__file__)
 
-with open(os.path.join(mydir, 'myversion.txt'), 'r') as f:
-    version = f.read().strip()
+version = ""
 
-with open('README.rst') as f:
+try:
+    version = (
+        subprocess.check_output(["git", "tag", "--points-at", "HEAD"])
+        .decode("ascii")
+        .strip()
+    )
+except:
+    pass
+
+if version == "":
+    with open(os.path.join(mydir, "myversion.txt"), "r") as f:
+        version = f.read().strip()
+
+with open("README.rst") as f:
     long_description = f.read()
 
 setup(
@@ -33,11 +48,10 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    url='https://github.com/snmishra/ftd2xx',  # project home page, if any
+    url="https://github.com/snmishra/ftd2xx",  # project home page, if any
     zip_safe=False,
     test_suite="ftd2xx.tests.t_ftd2xx",
-    cmdclass = {'build_py': build_py, 'build_scripts': build_scripts},
+    cmdclass={"build_py": build_py, "build_scripts": build_scripts},
     # could also include long_description, download_url, classifiers, etc.
-    install_requires=(['future',
-                       'pywin32; platform_system == "Windows"'])
+    install_requires=(["future", 'pywin32; platform_system == "Windows"']),
 )
