@@ -19,8 +19,14 @@ class FTD2XX(BaseFTD2XX):
             return super().read(nchars, raw)
     
     def setTimeouts(self, read, write):
-        super().setTimeouts(read, write)
-        self.timeouts = (None if not read else read / 1000.0), (None if not write else write /1000.0)
+        super().setTimeouts(
+            (read if not read > 0 else 1),
+            (write if not write > 0 else 1)
+        )
+        self.timeouts = (
+            (None if not read > 0 else (read - 1) / 1000.0),
+            (None if not write > 0 else (write - 1) / 1000.0)
+        )
 
 def open(dev=0):
     """Open a handle to a usb device by index and return an FTD2XX instance for
