@@ -206,6 +206,25 @@ class TestGlobalFunctions(unittest.TestCase):
     def testsetVIDPID(self):
         pass
     
+    def testaioopen(self):
+        try:
+            device = ftd2xx.aio.open()
+            self.assertTrue(isinstance(device, ftd2xx.aio.FTD2XX))
+        except AssertionError:
+            raise
+        else:
+            device.close()
+
+    def testaioopenEx(self):
+        try:
+            dev0_id = ftd2xx.listDevices()[0]
+            dev0 = ftd2xx.aio.openEx(dev0_id)
+            self.assertTrue(isinstance(dev0, ftd2xx.aio.FTD2XX))
+        except AssertionError:
+            raise
+        else:
+            dev0.close()
+    
     
 class TestAIOFTD2XX(TestFTD2XX, unittest.IsolatedAsyncioTestCase):
     def setUp(self):
