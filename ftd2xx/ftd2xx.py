@@ -150,7 +150,7 @@ class BaseFTD2XX(AbstractContextManager):
         call_ft(_ft.FT_Close, self.handle)
         self.status = 0
 
-    def _read(self, nchars, raw=True):
+    def read(self, nchars, raw=True):
         """Read up to nchars bytes of data from the device. Can return fewer if
         timedout. Use getQueueStatus to find how many bytes are available"""
         b_read = _ft.DWORD()
@@ -408,8 +408,7 @@ class BaseFTD2XX(AbstractContextManager):
     def __exit__(self, exc_type, exc_value, exc_traceback): self.close()
     
 class FTD2XX(BaseFTD2XX):
-    def read(self, nchars, raw=True):
-        return self._read(nchars, raw)
+    """Classic (synchronous) class for a device"""
 
 __all__ = ['call_ft', 'listDevices', 'getLibraryVersion', \
            'createDeviceInfoList', 'getDeviceInfoDetail', 'open', \
