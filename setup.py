@@ -21,6 +21,8 @@ try:
         .decode("ascii")
         .strip()
     )
+    if version.startswith("v"):
+        version = version[1:]
 except:
     pass
 
