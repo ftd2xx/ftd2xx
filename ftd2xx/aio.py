@@ -6,13 +6,21 @@ from .ftd2xx import BaseFTD2XX, _ft
 
 
 class FTD2XX(BaseFTD2XX):
+    timeouts = None, None
+    
     async def read(self, nchars: int, raw=True):
         async def bytes_ready(n):
             while not self.getQueueStatus() >= nchars:
                 await asyncio.sleep(1e-3)  # Non-zero to save CPU (specific to my application, maybe there is a better general approach)
 
-        await asyncio.wait_for(bytes_ready(nchars), timeout=None)  # TODO: Use timeouts passed to setTimeouts()
-        return super().read(nchars, raw)
+        try:
+            await asyncio.wait_for(bytes_ready(nchars), timeout=self.timeouts[0])
+        finally:
+            return super().read(nchars, raw)
+    
+    def setTimeouts(self, read, write):
+        super().setTimeouts(read, write)
+        self.timeouts = (None if not read else read / 1000.0), (None if not write else write /1000.0)
 
 def open(dev=0):
     """Open a handle to a usb device by index and return an FTD2XX instance for
