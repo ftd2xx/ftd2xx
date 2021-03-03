@@ -6,7 +6,15 @@ from ..ftd2xx import _ft
 
 
 class FTD2XX(FTD2XX):
-    timeouts = None, None
+    _timeouts = None, None
+    
+    @property
+    def timeouts(self): return self._timeouts
+    
+    @timeouts.setter
+    def timeouts(self, timeouts: tuple):
+        super().setTimeouts(*[1 if t > 0 else 0 for t in timeouts])
+        self._timeouts = tuple([t if t > 0 else 0 for t in timeouts])
     
     async def read(self, nchars: int, raw=True):
         async def bytes_ready(n):
@@ -21,9 +29,6 @@ class FTD2XX(FTD2XX):
             return super().read(nchars, raw)
     
     def setTimeouts(self, read, write):
-        if not read > 0: read = 0
-        if not write > 0: write = 0
-        super().setTimeouts((1 if read else 0), (1 if write else 0))
         self.timeouts = read, write
 
 def open(dev=0):
