@@ -6,7 +6,7 @@ from ..ftd2xx import _ft
 
 
 class FTD2XX(FTD2XX):
-    _timeouts = None, None
+    _timeouts = 0, 0
     
     @property
     def timeouts(self): return self._timeouts
