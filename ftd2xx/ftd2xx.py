@@ -133,7 +133,7 @@ else:
         call_ft(_ft.FT_SetVIDPID, _ft.DWORD(vid), _ft.DWORD(pid))
         return None
 
-class BaseFTD2XX(AbstractContextManager):
+class FTD2XX(AbstractContextManager):
     """Class for communicating with an FTDI device"""
     def __init__(self, handle, update=True):
         """Create an instance of the FTD2XX class with the given device handle
@@ -406,9 +406,7 @@ class BaseFTD2XX(AbstractContextManager):
         return buf.value[:b_read.value]
     
     def __exit__(self, exc_type, exc_value, exc_traceback): self.close()
-    
-class FTD2XX(BaseFTD2XX):
-    """Classic (synchronous) class for a device"""
+
 
 __all__ = ['call_ft', 'listDevices', 'getLibraryVersion', \
            'createDeviceInfoList', 'getDeviceInfoDetail', 'open', \
