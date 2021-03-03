@@ -1,8 +1,8 @@
 import asyncio
 import ctypes as c
-from .defines import *
-from .ftd2xx import *
-from .ftd2xx import _ft
+from ..defines import *
+from ..ftd2xx import *
+from ..ftd2xx import _ft
 
 
 class FTD2XX(FTD2XX):
