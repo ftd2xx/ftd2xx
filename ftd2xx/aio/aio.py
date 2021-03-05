@@ -1,4 +1,5 @@
 import asyncio
+import async_timeout
 import ctypes as c
 from typing import Tuple
 from .. import defines
@@ -14,27 +15,23 @@ class FTD2XX(ftd2xx.FTD2XX):
         return self._timeouts
 
     @timeouts.setter
-    def timeouts(self, timeouts: Tuple[float, float]):
-        super().setTimeouts(*[1 if t > 0 else 0 for t in timeouts])
+    def timeouts(self, timeouts: Tuple[int, int]):
+        read, write = timeouts
+        super().setTimeouts((1 if read > 0 else 0), write)
         self._timeouts = [t if t > 0 else 0 for t in timeouts]
 
     async def read(self, nchars: int, raw=True, exc=False):
-        async def bytes_ready(n):
-            while self.getQueueStatus() < nchars:
-                await asyncio.sleep(
-                    1e-3
-                )  # Non-zero to save CPU (maybe there is a better approach)
+        timeout, _ = self.timeouts
+        timeout = timeout / 1000.0 if timeout else None
 
         try:
-            timeout, _ = self.timeouts
-            timeout = (timeout - 1) / 1000.0 if timeout else None
-            if exc:
-                timeout += 1e-3
-            await asyncio.wait_for(bytes_ready(nchars), timeout=timeout)
-        except asyncio.TimeoutError:
-            if exc:
-                raise
+            async with async_timeout.timeout(timeout) as cm:
+                while self.getQueueStatus() < nchars:
+                    await asyncio.sleep(1e-3)
         finally:
+            if exc and cm.expired:
+                raise asyncio.TimeoutError
+
             return super().read(nchars, raw)
 
     def write(self, data, exc=False):

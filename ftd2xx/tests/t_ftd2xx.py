@@ -235,6 +235,19 @@ class TestAIOFTD2XX(TestFTD2XX, unittest.IsolatedAsyncioTestCase):
         result = await self.device.read(1)
         self.assertTrue(isinstance(result, bytes))
 
+    async def testreadtimeout(self):
+        self.device.setTimeouts(1, 0)
+
+        for _ in range(100):
+            try:
+                await self.device.read(1, exc=True)
+                self.device.purge()
+                continue
+            except Exception as e:
+                self.assertTrue(isinstance(e, asyncio.TimeoutError))
+                return
+        raise Exception("Could not timeout!")
+
 
 if __name__ == "__main__":
     unittest.main()
