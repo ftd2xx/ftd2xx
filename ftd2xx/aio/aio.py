@@ -23,7 +23,7 @@ class FTD2XX(ftd2xx.FTD2XX):
             while self.getQueueStatus() < nchars:
                 await asyncio.sleep(
                     1e-3
-                )  # Non-zero to save CPU (specific to my application, maybe there is a better general approach)
+                )  # Non-zero to save CPU (maybe there is a better approach)
 
         try:
             timeout, _ = self.timeouts
