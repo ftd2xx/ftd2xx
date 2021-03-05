@@ -3,7 +3,7 @@
 from builtins import str, int
 import asyncio
 import unittest
-from .. import ftd2xx
+from .. import ftd2xx, aio
 from ..ftd2xx import _ft
 
 
@@ -208,8 +208,8 @@ class TestGlobalFunctions(unittest.TestCase):
 
     def testaioopen(self):
         try:
-            device = ftd2xx.aio.open()
-            self.assertTrue(isinstance(device, ftd2xx.aio.FTD2XX))
+            device = aio.open()
+            self.assertTrue(isinstance(device, aio.FTD2XX))
         except AssertionError:
             raise
         else:
@@ -217,9 +217,9 @@ class TestGlobalFunctions(unittest.TestCase):
 
     def testaioopenEx(self):
         try:
-            dev0_id = ftd2xx.listDevices()[0]
-            dev0 = ftd2xx.aio.openEx(dev0_id)
-            self.assertTrue(isinstance(dev0, ftd2xx.aio.FTD2XX))
+            dev0_id = aio.listDevices()[0]
+            dev0 = aio.openEx(dev0_id)
+            self.assertTrue(isinstance(dev0, aio.FTD2XX))
         except AssertionError:
             raise
         else:
@@ -228,7 +228,7 @@ class TestGlobalFunctions(unittest.TestCase):
 
 class TestAIOFTD2XX(TestFTD2XX, unittest.IsolatedAsyncioTestCase):
     def setUp(self):
-        self.device = ftd2xx.aio.open()
+        self.device = aio.open()
 
     async def testread(self):
         self.device.setTimeouts(1000, 0)
