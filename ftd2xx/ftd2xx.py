@@ -9,7 +9,7 @@ import sys
 from builtins import range
 from contextlib import AbstractContextManager
 from types import TracebackType
-from typing import Any, Callable, List, Optional, Tuple, Type, TypedDict, Union
+from typing import Callable, List, Optional, Tuple, Type, TypedDict, Union
 
 if sys.platform == "win32":
     from . import _ftd2xx as _ft
@@ -480,7 +480,7 @@ class FTD2XX(AbstractContextManager):
         return None
 
     def getDeviceInfo(self) -> DeviceInfo:
-        """Returns a dictionary describing the device. """
+        """Returns a dictionary describing the device."""
         deviceType = _ft.DWORD()
         deviceId = _ft.DWORD()
         desc = c.c_buffer(defines.MAX_DESCRIPTION_SIZE)

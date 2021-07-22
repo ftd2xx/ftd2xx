@@ -1,14 +1,14 @@
 from __future__ import print_function
-from setuptools import setup, find_packages
 
+import os
 import subprocess
-
-# import sys
-
 from distutils.command.build_py import build_py
 from distutils.command.build_scripts import build_scripts
 
-import os
+from setuptools import find_packages, setup
+
+# import sys
+
 
 mydir = os.path.dirname(__file__)
 
