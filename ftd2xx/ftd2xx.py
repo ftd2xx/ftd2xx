@@ -536,11 +536,11 @@ class FTD2XX(AbstractContextManager):
             raise Exception("FT_GetComPortNumber is only available on windows")
         return m.value
 
-    def eeProgram(self, progdata: Optional[_ft.ft_program_data] = None, **kwds) -> None:
+    def eeProgram(self, progdata: Optional[ft_program_data] = None, **kwds) -> None:
         """Program the EEPROM with custom data. If SerialNumber is null, a new
         serial number is generated from ManufacturerId"""
         if progdata is None:
-            progdata = _ft.ft_program_data(**kwds)
+            progdata = ft_program_data(**kwds)
         #        if self.devInfo['type'] == 4:
         #            version = 1
         #        elif self.devInfo['type'] == 5:
@@ -553,7 +553,7 @@ class FTD2XX(AbstractContextManager):
         call_ft(_ft.FT_EE_Program, self.handle, progdata)
         return None
 
-    def eeRead(self) -> _ft.ft_program_data:
+    def eeRead(self) -> ft_program_data:
         """Get the program information from the EEPROM"""
         #        if self.devInfo['type'] == 4:
         #            version = 1
@@ -566,7 +566,7 @@ class FTD2XX(AbstractContextManager):
         ManufacturerId = c.c_buffer(defines.MAX_DESCRIPTION_SIZE)
         Description = c.c_buffer(defines.MAX_DESCRIPTION_SIZE)
         SerialNumber = c.c_buffer(defines.MAX_DESCRIPTION_SIZE)
-        progdata = _ft.ft_program_data(
+        progdata = ft_program_data(
             **ProgramData(
                 Signature1=0,
                 Signature2=0xFFFFFFFF,
