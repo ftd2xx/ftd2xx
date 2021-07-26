@@ -3,7 +3,7 @@
 import unittest
 from builtins import int, str
 
-from .. import aio, ftd2xx
+from .. import ftd2xx
 from ..ftd2xx import DeviceError
 
 
@@ -188,8 +188,9 @@ class TestGlobalFunctions(unittest.TestCase):
             device.close()
 
     def testopenEx(self):
+        dev0 = None
         try:
-            devices = aio.listDevices()
+            devices = ftd2xx.listDevices()
             if devices is None:
                 raise DeviceError("Device not found")
             dev0_id = devices[0]
@@ -198,40 +199,6 @@ class TestGlobalFunctions(unittest.TestCase):
             self.assertEqual(dev0.getDeviceInfo()["serial"], dev0_id)
         except AssertionError:
             raise
-        else:
-            dev0.close()
-
-    def testw32CreateFile(self):
-        pass
-
-    def testgetVIDPID(self):
-        pass
-
-    def testsetVIDPID(self):
-        pass
-
-    def testaioopen(self):
-        try:
-            device = aio.open()
-            self.assertIsInstance(device, aio.FTD2XX)
-        except AssertionError:
-            raise
-        else:
-            device.close()
-
-    def testaioopenEx(self):
-        try:
-            devices = aio.listDevices()
-            if devices is None:
-                raise DeviceError("Device not found")
-            dev0_id = devices[0]
-            dev0 = aio.openEx(dev0_id)
-            self.assertIsInstance(dev0, aio.FTD2XX)
-        except AssertionError:
-            raise
-        else:
-            dev0.close()
-
-
-# if __name__ == "__main__":
-#     unittest.main()
+        finally:
+            if dev0:
+                dev0.close()
