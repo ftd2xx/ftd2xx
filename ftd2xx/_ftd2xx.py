@@ -51,14 +51,15 @@ else:
     LPSTR = STRING
 
 _libraries = {}
-extra_dll_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "dll"))
 
 if sys.platform == "win32":
-    if sys.version_info >= (3, 8):
-        os.add_dll_directory(extra_dll_dir)
-    else:
-        os.environ.setdefault("PATH", "")
-        os.environ["PATH"] += os.pathsep + extra_dll_dir
+    # If you need non-standard DLL directory, you may need to uncomment below
+    # extra_dll_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "dll"))
+    # if sys.version_info >= (3, 8):
+    #     os.add_dll_directory(extra_dll_dir)
+    # else:
+    #     os.environ.setdefault("PATH", "")
+    #     os.environ["PATH"] += os.pathsep + extra_dll_dir
     try:
         _libraries["ftd2xx.dll"] = WinDLL("ftd2xx64.dll")
     except OSError:  # 32-bit, or 64-bit library with plain name
