@@ -1,3 +1,4 @@
+# flake8: noqa
 """
 Module to use asyncio on FTD2XX object.
 """

@@ -1,15 +1,14 @@
 from __future__ import print_function
-from setuptools import setup, find_packages
 
+import os
 import subprocess
-
-# import sys
-
 from distutils.command.build_py import build_py
 from distutils.command.build_scripts import build_scripts
 
-import os
-import sys
+from setuptools import find_packages, setup
+
+# import sys
+
 
 mydir = os.path.dirname(__file__)
 
@@ -23,7 +22,7 @@ try:
     )
     if version.startswith("v"):
         version = version[1:]
-except:
+except subprocess.CalledProcessError:
     pass
 
 if version == "":
@@ -40,7 +39,10 @@ setup(
     # metadata for upload to PyPI
     author="Satya Mishra",
     author_email="satya.devel@gmail.com",
-    description="Python interface to ftd2xx.dll from FTDI using ctypes based on d2xx by Pablo Bleyer",
+    description=(
+        "Python interface to ftd2xx.dll from FTDI using ctypes"
+        "based on d2xx by Pablo Bleyer"
+    ),
     long_description=long_description,
     long_description_content_type="text/x-rst",
     license="MIT",

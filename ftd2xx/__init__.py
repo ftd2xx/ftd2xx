@@ -7,11 +7,22 @@ on the object thus returned.
 There are a few convenience functions too
 """
 from __future__ import absolute_import
+
 import sys
 
-from .ftd2xx import *
 from . import aio
-
+from .ftd2xx import (
+    FTD2XX,
+    DeviceError,
+    call_ft,
+    createDeviceInfoList,
+    ft_program_data,
+    getDeviceInfoDetail,
+    getLibraryVersion,
+    listDevices,
+    open,
+    openEx,
+)
 
 __all__ = [
     "call_ft",
