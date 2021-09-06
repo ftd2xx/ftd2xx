@@ -224,7 +224,7 @@ def getDeviceInfoDetail(devnum: int = 0, update: bool = True) -> DeviceInfoDetai
 
 def open(dev: int = 0, update: bool = True):
     """Open a handle to a usb device by index and return an FTD2XX instance for
-    it"""
+    it. Set update to False to avoid a slow call to createDeviceInfoList."""
     h = _ft.FT_HANDLE()
     call_ft(_ft.FT_Open, dev, c.byref(h))
     return FTD2XX(h, update=update)
@@ -235,7 +235,7 @@ def openEx(
 ):
     """Open a handle to a usb device by serial number(default), description or
     location(Windows only) depending on value of flags and return an FTD2XX
-    instance for it"""
+    instance for it. Set update to False to avoid a slow call to createDeviceInfoList."""
     h = _ft.FT_HANDLE()
     call_ft(_ft.FT_OpenEx, id_str, _ft.DWORD(flags), c.byref(h))
     return FTD2XX(h, update=update)
