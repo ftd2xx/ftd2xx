@@ -55,7 +55,8 @@ setup(
     url="https://github.com/snmishra/ftd2xx",  # project home page, if any
     zip_safe=False,
     test_suite="ftd2xx.tests.t_ftd2xx",
-    cmdclass={"build_py": build_py, "build_scripts": build_scripts},
+    cmdclass={"build_py": build_py, "build_scripts": build_scripts},  # type: ignore
     # could also include long_description, download_url, classifiers, etc.
-    install_requires=(["future", 'pywin32; platform_system == "Windows"']),
+    install_requires=(['pywin32; platform_system == "Windows"']),
+    extras_require={"aio": ["async_timeout"]},
 )
