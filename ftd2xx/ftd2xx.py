@@ -224,7 +224,15 @@ def getDeviceInfoDetail(devnum: int = 0, update: bool = True) -> DeviceInfoDetai
 
 def open(dev: int = 0, update: bool = True):
     """Open a handle to a usb device by index and return an FTD2XX instance for
-    it. Set update to False to avoid a slow call to createDeviceInfoList."""
+    it. Set update to False to avoid a slow call to createDeviceInfoList.
+
+    Args:
+        dev (int): Device number
+        update (bool): Set False to disable automatic call to createDeviceInfoList
+
+    Returns:
+        instance of FTD2XX instance if successful
+    """
     h = _ft.FT_HANDLE()
     call_ft(_ft.FT_Open, dev, c.byref(h))
     return FTD2XX(h, update=update)
@@ -235,7 +243,16 @@ def openEx(
 ):
     """Open a handle to a usb device by serial number(default), description or
     location(Windows only) depending on value of flags and return an FTD2XX
-    instance for it. Set update to False to avoid a slow call to createDeviceInfoList."""
+    instance for it. Set update to False to avoid a slow call to createDeviceInfoList.
+
+    Args:
+        id_str (bytes): ID string from listDevices
+        flags (int) = FLAG (consult D2XX Guide). Defaults to OPEN_BY_SERIAL_NUMBER
+        update (bool): Set False to disable automatic call to createDeviceInfoList
+
+    Returns:
+        instance of FTD2XX instance if successful
+    """
     h = _ft.FT_HANDLE()
     call_ft(_ft.FT_OpenEx, id_str, _ft.DWORD(flags), c.byref(h))
     return FTD2XX(h, update=update)
@@ -285,8 +302,12 @@ class FTD2XX(AbstractContextManager):
 
     def __init__(self, handle: _ft.FT_HANDLE, update: bool = True):
         """Create an instance of the FTD2XX class with the given device handle
-        and populate the device info in the instance dictionary. Set
-        update to False to avoid a slow call to createDeviceInfoList."""
+        and populate the device info in the instance dictionary.
+
+        Args:
+            update (bool): Set False to disable automatic (slow) call to createDeviceInfoList
+
+        """
         self.handle = handle
         self.status = 1
         # createDeviceInfoList is slow, only run if update is True
