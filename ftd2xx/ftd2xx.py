@@ -305,7 +305,8 @@ class FTD2XX(AbstractContextManager):
         and populate the device info in the instance dictionary.
 
         Args:
-            update (bool): Set False to disable automatic (slow) call to createDeviceInfoList
+            update (bool): Set False to disable automatic (slow) call to
+            createDeviceInfoList
 
         """
         self.handle = handle
