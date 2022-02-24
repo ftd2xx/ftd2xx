@@ -1,3 +1,6 @@
+from enum import unique, IntFlag
+import sys
+
 # Statuses
 OK = 0
 INVALID_HANDLE = 1
@@ -24,10 +27,22 @@ LIST_NUMBER_ONLY = 0x80000000
 LIST_BY_INDEX = 0x40000000
 LIST_ALL = 0x20000000
 
-# OpenEx flags
-OPEN_BY_SERIAL_NUMBER = 1
-OPEN_BY_DESCRIPTION = 2
-OPEN_BY_LOCATION = 4
+
+@unique
+class OpenExFlags(IntFlag):
+    """Used to indicate the type of identifier being passed to FT_OpenEx."""
+
+    OPEN_BY_SERIAL_NUMBER = 1
+    OPEN_BY_DESCRIPTION = 2
+
+    if sys.platform == "win32":
+        OPEN_BY_LOCATION = 4
+
+
+OPEN_BY_SERIAL_NUMBER = OpenExFlags.OPEN_BY_SERIAL_NUMBER
+OPEN_BY_DESCRIPTION = OpenExFlags.OPEN_BY_DESCRIPTION
+if sys.platform == "win32":
+    OPEN_BY_LOCATION = OpenExFlags.OPEN_BY_LOCATION
 
 # Device Identifiers
 DEVICE_232BM = 0
