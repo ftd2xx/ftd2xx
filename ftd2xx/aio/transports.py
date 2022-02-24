@@ -4,7 +4,10 @@
 # Project Homepage: https://github.com/pyserial/pyserial-asyncio
 #
 """Asyncio transports for FTDI D2XX devices."""
+from abc import abstractmethod
 import asyncio
+import sys
+from ..ftd2xx import DeviceError
 
 
 class FTD2xxBaseTransport(asyncio.BaseTransport):
