@@ -4,6 +4,7 @@
 # Project Homepage: https://github.com/pyserial/pyserial-asyncio
 #
 """Asyncio transports for FTDI D2XX devices."""
+import asyncio
 
 
 class FTD2xxBaseTransport(asyncio.BaseTransport):
