@@ -1,7 +1,7 @@
 import asyncio
 import ctypes as c
 from typing import Tuple, Union
-
+import sys
 import async_timeout
 
 from .. import defines, ftd2xx
@@ -100,8 +100,11 @@ async def create_ftd2xx_connection(
     """
 
     async def create_tp_pair():
-        if isinstance(dev_id, int) and flags != defines.OPEN_BY_LOCATION:
-            ftd2xx_instance = ftd2xx.open(dev_id)
+        if isinstance(dev_id, int):
+            if sys.platform == "win32" and flags == defines.OPEN_BY_LOCATION:
+                ftd2xx_instance = ftd2xx.openEx(dev_id, defines.OpenExFlags(flags))
+            else:
+                ftd2xx_instance = ftd2xx.open(dev_id)
         else:
             ftd2xx_instance = ftd2xx.openEx(dev_id, defines.OpenExFlags(flags))
 
