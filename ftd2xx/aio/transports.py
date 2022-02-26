@@ -182,7 +182,7 @@ class FTD2xxReadTransport(FTD2xxBaseTransport, asyncio.ReadTransport):
         self._remove_reader()
         super()._shutdown()
 
-    def _graceful_shutdown(self) -> True:
+    def _graceful_shutdown(self) -> bool:
         if super()._graceful_shutdown():
             self._remove_reader()
             return True
@@ -406,7 +406,7 @@ class FTD2xxWriteTransport(FTD2xxBaseTransport, asyncio.WriteTransport):
             if self._flushed():
                 self._remove_writer()
                 return True
-            return False
+        return False
 
     def _call_connection_lost(self, exc):
         assert not self._has_writer

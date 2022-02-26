@@ -167,7 +167,7 @@ def listDevices(flags: int = 0) -> Optional[List[bytes]]:
         # for i in range(devcount):
         #     ba[i] = c.c_char_p(bd[i])
         call_ft(_ft.FT_ListDevices, ba, c.byref(n), _ft.DWORD(defines.LIST_ALL | flags))
-        return [res for res in ba[:devcount]]
+        return [res for res in ba[:devcount]] # type: ignore
     else:
         return None
 
@@ -259,7 +259,7 @@ def openEx(
 
 
 if sys.platform == "win32":
-    from win32con import GENERIC_READ, GENERIC_WRITE, OPEN_EXISTING
+    from win32con import GENERIC_READ, GENERIC_WRITE, OPEN_EXISTING # type: ignore
 
     def w32CreateFile(
         name: bytes,
