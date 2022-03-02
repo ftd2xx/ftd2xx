@@ -1,6 +1,6 @@
 import asyncio
 import ctypes as c
-from typing import Tuple, Union
+from typing import Tuple, Union, Callable
 import sys
 import async_timeout
 
@@ -76,8 +76,8 @@ def openEx(id_str, flags=defines.OPEN_BY_SERIAL_NUMBER):
 # Project Homepage: https://github.com/pyserial/pyserial-asyncio
 #
 async def create_ftd2xx_connection(
-    loop,
-    protocol_factory,
+    loop: asyncio.AbstractEventLoop,
+    protocol_factory: Callable,
     dev_id: Union[int, bytes] = 0,
     flags: defines.OpenExFlags = defines.OPEN_BY_SERIAL_NUMBER,
 ):

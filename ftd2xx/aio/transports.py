@@ -6,7 +6,6 @@
 """Asyncio transports for FTDI D2XX devices."""
 from abc import abstractmethod
 import asyncio
-import sys
 from ..ftd2xx import DeviceError
 
 
@@ -19,7 +18,7 @@ class FTD2xxBaseTransport(asyncio.BaseTransport):
         self._protocol = protocol
         self._ftd2xx = ftd2xx_instance
         self._closing = False
-        self._poll_wait_time = 0.0005  # TODO: Can we use D2XX API?
+        self._poll_wait_time = 0.0005
 
         self._ftd2xx.setTimeouts(1, 1)  # Non-blocking
         loop.call_soon(protocol.connection_made, self)
@@ -74,7 +73,6 @@ class FTD2xxBaseTransport(asyncio.BaseTransport):
     @abstractmethod
     def _shutdown(self):
         """Minimal cleanup when immediate shutdown is needed."""
-        pass
 
     @abstractmethod
     def _graceful_shutdown(self) -> bool:
@@ -192,42 +190,27 @@ class FTD2xxReadTransport(FTD2xxBaseTransport, asyncio.ReadTransport):
         assert not self._has_reader
         super()._call_connection_lost(exc)
 
-    if sys.platform == "win32":
-
-        def _poll_read(self):
-            if self._has_reader and not self._closing:
-                try:
-                    self._has_reader = self._loop.call_later(
-                        self._poll_wait_time, self._poll_read
-                    )
-                    # if self.serial.in_waiting:
-                    if True:  # TODO: ???
-                        self._read_ready()
-                except DeviceError as exc:
-                    self._fatal_error(exc, "Fatal write error on ftd2xx transport")
-
-        def _ensure_reader(self):
-            if not self._has_reader and not self._closing:
+    def _poll_read(self):
+        if self._has_reader and not self._closing:
+            try:
                 self._has_reader = self._loop.call_later(
                     self._poll_wait_time, self._poll_read
                 )
+                if self._ftd2xx.getQueueStatus():
+                    self._read_ready()
+            except DeviceError as exc:
+                self._fatal_error(exc, "Fatal write error on ftd2xx transport")
 
-        def _remove_reader(self):
-            if self._has_reader:
-                self._has_reader.cancel()
-            self._has_reader = False
+    def _ensure_reader(self):
+        if not self._has_reader and not self._closing:
+            self._has_reader = self._loop.call_later(
+                self._poll_wait_time, self._poll_read
+            )
 
-    else:
-
-        def _ensure_reader(self):
-            if (not self._has_reader) and (not self._closing):
-                self._loop.add_reader(self._ftd2xx.fileno(), self._read_ready)
-                self._has_reader = True
-
-        def _remove_reader(self):
-            if self._has_reader:
-                self._loop.remove_reader(self._ftd2xx.fileno())
-                self._has_reader = False
+    def _remove_reader(self):
+        if self._has_reader:
+            self._has_reader.cancel()
+        self._has_reader = False
 
 
 class FTD2xxWriteTransport(FTD2xxBaseTransport, asyncio.WriteTransport):
@@ -238,7 +221,7 @@ class FTD2xxWriteTransport(FTD2xxBaseTransport, asyncio.WriteTransport):
         self._write_buffer = []
         self._protocol_paused = False
         self._has_writer = False
-        # self._max_out_waiting = 1024
+        self._max_out_waiting = 1024
         self._set_write_buffer_limits()
 
     def set_write_buffer_limits(self, high=None, low=None):
@@ -406,7 +389,7 @@ class FTD2xxWriteTransport(FTD2xxBaseTransport, asyncio.WriteTransport):
             if self._flushed():
                 self._remove_writer()
                 return True
-            return False
+        return False
 
     def _call_connection_lost(self, exc):
         assert not self._has_writer
@@ -416,37 +399,23 @@ class FTD2xxWriteTransport(FTD2xxBaseTransport, asyncio.WriteTransport):
         self._write_buffer.clear()
         super()._post_connection_lost()
 
-    if sys.platform == "win32":
+    def _poll_write(self):
+        if self._has_writer and not self._closing:
+            self._has_writer = self._loop.call_later(
+                self._poll_wait_time, self._poll_write
+            )
+            # Check tx queue
+            if self._ftd2xx.getStatus()[1] < self._max_out_waiting:
+                self._write_ready()
 
-        def _poll_write(self):
-            if self._has_writer and not self._closing:
-                self._has_writer = self._loop.call_later(
-                    self._poll_wait_time, self._poll_write
-                )
-                # if self.serial.out_waiting < self._max_out_waiting:
-                if True:  # TODO: ???
-                    self._write_ready()
+    def _ensure_writer(self):
+        if not self._has_writer and not self._closing:
+            self._has_writer = self._loop.call_soon(self._poll_write)
 
-        def _ensure_writer(self):
-            if not self._has_writer and not self._closing:
-                self._has_writer = self._loop.call_soon(self._poll_write)
-
-        def _remove_writer(self):
-            if self._has_writer:
-                self._has_writer.cancel()
-            self._has_writer = False
-
-    else:
-
-        def _ensure_writer(self):
-            if (not self._has_writer) and (not self._closing):
-                self._loop.add_writer(self._ftd2xx.handle.fileno(), self._write_ready)
-                self._has_writer = True
-
-        def _remove_writer(self):
-            if self._has_writer:
-                self._loop.remove_writer(self._ftd2xx.handle.fileno())
-                self._has_writer = False
+    def _remove_writer(self):
+        if self._has_writer:
+            self._has_writer.cancel()
+        self._has_writer = False
 
 
 class FTD2xxTransport(FTD2xxReadTransport, FTD2xxWriteTransport):
