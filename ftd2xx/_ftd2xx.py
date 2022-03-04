@@ -4,7 +4,6 @@
 import os
 import sys
 from ctypes import (
-    CDLL,
     CFUNCTYPE,
     POINTER,
     Structure,
@@ -12,154 +11,95 @@ from ctypes import (
     c_char,
     c_char_p,
     c_int,
-    c_short,
     c_ubyte,
     c_ulong,
     c_ulonglong,
-    c_ushort,
     c_void_p,
 )
-from ctypes.util import find_library
+from ctypes.wintypes import (
+    BOOL,
+    BYTE,
+    DWORD,
+    HANDLE,
+    LPCSTR,
+    ULONG,
+    WORD,
+    USHORT,
+    PCHAR,
+    LPWORD,
+    LPLONG,
+    PULONG,
+    LPVOID,
+)
+
 
 STRING = c_char_p
-if sys.platform == "win32":
-    from ctypes.wintypes import (
-        BOOL,
-        BOOLEAN,
-        BYTE,
-        DWORD,
-        FILETIME,
-        HANDLE,
-        LONG,
-        LPCSTR,
-        LPSTR,
-        UINT,
-        ULONG,
-        WORD,
-    )
-else:
-    DWORD = c_ulong
-    ULONG = c_ulong
-    WORD = c_ushort
-    BYTE = c_ubyte
-    BOOL = c_int
-    BOOLEAN = c_char
-    LPCSTR = STRING
-    HANDLE = c_void_p
-    LONG = c_long
-    UINT = c_uint
-    LPSTR = STRING
-
-_libraries = {}
-
-if sys.platform == "win32":
-    # If you need non-standard DLL directory, set FTD2XX_DLL_DIR to absoluate path to dll
-    extra_dll_dir = os.environ.get("FTD2XX_DLL_DIR")
-    if extra_dll_dir:
-        if sys.version_info >= (3, 8):
-            os.add_dll_directory(extra_dll_dir)
-        else:
-            os.environ.setdefault("PATH", "")
-            os.environ["PATH"] += os.pathsep + extra_dll_dir
-    try:
-        _libraries["ftd2xx.dll"] = WinDLL("ftd2xx64.dll")
-    except OSError:  # 32-bit, or 64-bit library with plain name
-        try:
-            _libraries["ftd2xx.dll"] = WinDLL("ftd2xx.dll")
-        except OSError as e:
-            if e.winerror == 126:  # type: ignore
-                error_message = (
-                    e.args[1]
-                    + "Unable to find D2XX DLL. Please make sure ftd2xx.dll or ftd2xx64.dll is in the path."
-                )
-                e.args = (e.args[0], error_message) + e.args[2:]
-                raise e
-            else:
-                raise
-else:
-    _libraries["ftd2xx.dll"] = CDLL("libftd2xx.so")
-
-
-FT_DEVICE_2232C = 4
-FT_OTHER_ERROR = 18
-FT_DEVICE_NOT_OPENED = 3
-FT_NOT_SUPPORTED = 17
-FT_INVALID_BAUD_RATE = 7
-FT_DEVICE_NOT_OPENED_FOR_ERASE = 8
-FT_EEPROM_NOT_PRESENT = 14
-FT_DEVICE_232R = 5
-FT_DEVICE_AM = 1
-FT_DEVICE_BM = 0
-FT_DEVICE_100AX = 2
-FT_EEPROM_WRITE_FAILED = 12
-FT_IO_ERROR = 4
-FT_DEVICE_NOT_OPENED_FOR_WRITE = 9
-FT_INVALID_HANDLE = 1
-FT_EEPROM_ERASE_FAILED = 13
-FT_EEPROM_READ_FAILED = 11
-FT_INSUFFICIENT_RESOURCES = 5
-FT_DEVICE_UNKNOWN = 3
-FT_INVALID_ARGS = 16
-FT_FAILED_TO_WRITE_DEVICE = 10
-FT_DEVICE_NOT_FOUND = 2
-FT_EEPROM_NOT_PROGRAMMED = 15
-FT_OK = 0
-FT_INVALID_PARAMETER = 6
-USHORT = c_ushort
-SHORT = c_short
 UCHAR = c_ubyte
-LPBYTE = POINTER(c_ubyte)
-CHAR = c_char
-LPBOOL = POINTER(c_int)
 PUCHAR = POINTER(c_ubyte)
-PCHAR = STRING
 PVOID = c_void_p
-INT = c_int
 LPTSTR = STRING
 LPDWORD = POINTER(DWORD)
-LPWORD = POINTER(WORD)
-LPLONG = POINTER(LONG)
-PULONG = POINTER(ULONG)
-LPVOID = PVOID
 VOID = None
 ULONGLONG = c_ulonglong
 # WinTypes.h 38
+
+
 class _OVERLAPPED(Structure):
-    pass
+    _fields_ = [
+        # WinTypes.h 38
+        ("Internal", DWORD),
+        ("InternalHigh", DWORD),
+        ("Offset", DWORD),
+        ("OffsetHigh", DWORD),
+        ("hEvent", HANDLE),
+    ]
 
 
-_OVERLAPPED._fields_ = [
-    # WinTypes.h 38
-    ("Internal", DWORD),
-    ("InternalHigh", DWORD),
-    ("Offset", DWORD),
-    ("OffsetHigh", DWORD),
-    ("hEvent", HANDLE),
-]
 LPOVERLAPPED = POINTER(_OVERLAPPED)
 OVERLAPPED = _OVERLAPPED
 # WinTypes.h 46
+
+
 class _SECURITY_ATTRIBUTES(Structure):
-    pass
+    _fields_ = [
+        # WinTypes.h 46
+        ("nLength", DWORD),
+        ("lpSecurityDescriptor", LPVOID),
+        ("bInheritHandle", BOOL),
+    ]
 
 
-_SECURITY_ATTRIBUTES._fields_ = [
-    # WinTypes.h 46
-    ("nLength", DWORD),
-    ("lpSecurityDescriptor", LPVOID),
-    ("bInheritHandle", BOOL),
-]
 LPSECURITY_ATTRIBUTES = POINTER(_SECURITY_ATTRIBUTES)
 SECURITY_ATTRIBUTES = _SECURITY_ATTRIBUTES
 # WinTypes.h 52
-class timeval(Structure):
-    pass
+
+_libraries = {}
+
+# If you need non-standard DLL directory, set FTD2XX_DLL_DIR to absoluate path to dll
+extra_dll_dir = os.environ.get("FTD2XX_DLL_DIR")
+if extra_dll_dir:
+    if sys.version_info >= (3, 8):
+        os.add_dll_directory(extra_dll_dir)
+    else:
+        os.environ.setdefault("PATH", "")
+        os.environ["PATH"] += os.pathsep + extra_dll_dir
+try:
+    _libraries["ftd2xx.dll"] = WinDLL("ftd2xx64.dll")
+except OSError:  # 32-bit, or 64-bit library with plain name
+    try:
+        _libraries["ftd2xx.dll"] = WinDLL("ftd2xx.dll")
+    except OSError as e:
+        if e.winerror == 126:  # type: ignore
+            error_message = (
+                e.args[1] + "Unable to find D2XX DLL. "
+                "Please make sure that the directory containing your DLL is in "
+                "one (or both) environment variables: 'PATH', 'FTD2XX_DLL_DIR'. "
+                "Also, you must use 'ftd2xx.dll' or 'ftd2xx64.dll' as the filename."
+            )
+            e.args = (e.args[0], error_message) + e.args[2:]
+        raise e
 
 
-timeval._fields_ = [
-    # WinTypes.h 52
-]
-SYSTEMTIME = timeval
 FT_HANDLE = PVOID
 FT_STATUS = ULONG
 
@@ -395,71 +335,72 @@ FT_EraseEE.argtypes = [FT_HANDLE]
 FT_EraseEE.__doc__ = """FT_STATUS FT_EraseEE(FT_HANDLE ftHandle)
 ftd2xx.h:412"""
 # ftd2xx.h 417
+
+
 class ft_program_data(Structure):
-    pass
+    _fields_ = [
+        # ftd2xx.h 417
+        ("Signature1", DWORD),
+        ("Signature2", DWORD),
+        ("Version", DWORD),
+        ("VendorId", WORD),
+        ("ProductId", WORD),
+        ("Manufacturer", STRING),
+        ("ManufacturerId", STRING),
+        ("Description", STRING),
+        ("SerialNumber", STRING),
+        ("MaxPower", WORD),
+        ("PnP", WORD),
+        ("SelfPowered", WORD),
+        ("RemoteWakeup", WORD),
+        ("Rev4", UCHAR),
+        ("IsoIn", UCHAR),
+        ("IsoOut", UCHAR),
+        ("PullDownEnable", UCHAR),
+        ("SerNumEnable", UCHAR),
+        ("USBVersionEnable", UCHAR),
+        ("USBVersion", WORD),
+        ("Rev5", UCHAR),
+        ("IsoInA", UCHAR),
+        ("IsoInB", UCHAR),
+        ("IsoOutA", UCHAR),
+        ("IsoOutB", UCHAR),
+        ("PullDownEnable5", UCHAR),
+        ("SerNumEnable5", UCHAR),
+        ("USBVersionEnable5", UCHAR),
+        ("USBVersion5", WORD),
+        ("AIsHighCurrent", UCHAR),
+        ("BIsHighCurrent", UCHAR),
+        ("IFAIsFifo", UCHAR),
+        ("IFAIsFifoTar", UCHAR),
+        ("IFAIsFastSer", UCHAR),
+        ("AIsVCP", UCHAR),
+        ("IFBIsFifo", UCHAR),
+        ("IFBIsFifoTar", UCHAR),
+        ("IFBIsFastSer", UCHAR),
+        ("BIsVCP", UCHAR),
+        ("UseExtOsc", UCHAR),
+        ("HighDriveIOs", UCHAR),
+        ("EndpointSize", UCHAR),
+        ("PullDownEnableR", UCHAR),
+        ("SerNumEnableR", UCHAR),
+        ("InvertTXD", UCHAR),
+        ("InvertRXD", UCHAR),
+        ("InvertRTS", UCHAR),
+        ("InvertCTS", UCHAR),
+        ("InvertDTR", UCHAR),
+        ("InvertDSR", UCHAR),
+        ("InvertDCD", UCHAR),
+        ("InvertRI", UCHAR),
+        ("Cbus0", UCHAR),
+        ("Cbus1", UCHAR),
+        ("Cbus2", UCHAR),
+        ("Cbus3", UCHAR),
+        ("Cbus4", UCHAR),
+        ("RIsVCP", UCHAR),
+    ]
 
 
-ft_program_data._fields_ = [
-    # ftd2xx.h 417
-    ("Signature1", DWORD),
-    ("Signature2", DWORD),
-    ("Version", DWORD),
-    ("VendorId", WORD),
-    ("ProductId", WORD),
-    ("Manufacturer", STRING),
-    ("ManufacturerId", STRING),
-    ("Description", STRING),
-    ("SerialNumber", STRING),
-    ("MaxPower", WORD),
-    ("PnP", WORD),
-    ("SelfPowered", WORD),
-    ("RemoteWakeup", WORD),
-    ("Rev4", UCHAR),
-    ("IsoIn", UCHAR),
-    ("IsoOut", UCHAR),
-    ("PullDownEnable", UCHAR),
-    ("SerNumEnable", UCHAR),
-    ("USBVersionEnable", UCHAR),
-    ("USBVersion", WORD),
-    ("Rev5", UCHAR),
-    ("IsoInA", UCHAR),
-    ("IsoInB", UCHAR),
-    ("IsoOutA", UCHAR),
-    ("IsoOutB", UCHAR),
-    ("PullDownEnable5", UCHAR),
-    ("SerNumEnable5", UCHAR),
-    ("USBVersionEnable5", UCHAR),
-    ("USBVersion5", WORD),
-    ("AIsHighCurrent", UCHAR),
-    ("BIsHighCurrent", UCHAR),
-    ("IFAIsFifo", UCHAR),
-    ("IFAIsFifoTar", UCHAR),
-    ("IFAIsFastSer", UCHAR),
-    ("AIsVCP", UCHAR),
-    ("IFBIsFifo", UCHAR),
-    ("IFBIsFifoTar", UCHAR),
-    ("IFBIsFastSer", UCHAR),
-    ("BIsVCP", UCHAR),
-    ("UseExtOsc", UCHAR),
-    ("HighDriveIOs", UCHAR),
-    ("EndpointSize", UCHAR),
-    ("PullDownEnableR", UCHAR),
-    ("SerNumEnableR", UCHAR),
-    ("InvertTXD", UCHAR),
-    ("InvertRXD", UCHAR),
-    ("InvertRTS", UCHAR),
-    ("InvertCTS", UCHAR),
-    ("InvertDTR", UCHAR),
-    ("InvertDSR", UCHAR),
-    ("InvertDCD", UCHAR),
-    ("InvertRI", UCHAR),
-    ("Cbus0", UCHAR),
-    ("Cbus1", UCHAR),
-    ("Cbus2", UCHAR),
-    ("Cbus3", UCHAR),
-    ("Cbus4", UCHAR),
-    ("RIsVCP", UCHAR),
-]
 PFT_PROGRAM_DATA = POINTER(ft_program_data)
 FT_PROGRAM_DATA = ft_program_data
 # ftd2xx.h 501
@@ -660,76 +601,79 @@ FT_W32_CancelIo.argtypes = [FT_HANDLE]
 FT_W32_CancelIo.__doc__ = """BOOL FT_W32_CancelIo(FT_HANDLE ftHandle)
 ftd2xx.h:679"""
 # ftd2xx.h 685
+
+
 class _FTCOMSTAT(Structure):
-    pass
+    _fields_ = [
+        # ftd2xx.h 685
+        ("fCtsHold", DWORD, 1),
+        ("fDsrHold", DWORD, 1),
+        ("fRlsdHold", DWORD, 1),
+        ("fXoffHold", DWORD, 1),
+        ("fXoffSent", DWORD, 1),
+        ("fEof", DWORD, 1),
+        ("fTxim", DWORD, 1),
+        ("fReserved", DWORD, 25),
+        ("cbInQue", DWORD),
+        ("cbOutQue", DWORD),
+    ]
 
 
-_FTCOMSTAT._fields_ = [
-    # ftd2xx.h 685
-    ("fCtsHold", DWORD, 1),
-    ("fDsrHold", DWORD, 1),
-    ("fRlsdHold", DWORD, 1),
-    ("fXoffHold", DWORD, 1),
-    ("fXoffSent", DWORD, 1),
-    ("fEof", DWORD, 1),
-    ("fTxim", DWORD, 1),
-    ("fReserved", DWORD, 25),
-    ("cbInQue", DWORD),
-    ("cbOutQue", DWORD),
-]
 LPFTCOMSTAT = POINTER(_FTCOMSTAT)
 FTCOMSTAT = _FTCOMSTAT
 # ftd2xx.h 698
+
+
 class _FTDCB(Structure):
-    pass
+    _fields_ = [
+        # ftd2xx.h 698
+        ("DCBlength", DWORD),
+        ("BaudRate", DWORD),
+        ("fBinary", DWORD, 1),
+        ("fParity", DWORD, 1),
+        ("fOutxCtsFlow", DWORD, 1),
+        ("fOutxDsrFlow", DWORD, 1),
+        ("fDtrControl", DWORD, 2),
+        ("fDsrSensitivity", DWORD, 1),
+        ("fTXContinueOnXoff", DWORD, 1),
+        ("fOutX", DWORD, 1),
+        ("fInX", DWORD, 1),
+        ("fErrorChar", DWORD, 1),
+        ("fNull", DWORD, 1),
+        ("fRtsControl", DWORD, 2),
+        ("fAbortOnError", DWORD, 1),
+        ("fDummy2", DWORD, 17),
+        ("wReserved", WORD),
+        ("XonLim", WORD),
+        ("XoffLim", WORD),
+        ("ByteSize", BYTE),
+        ("Parity", BYTE),
+        ("StopBits", BYTE),
+        ("XonChar", c_char),
+        ("XoffChar", c_char),
+        ("ErrorChar", c_char),
+        ("EofChar", c_char),
+        ("EvtChar", c_char),
+        ("wReserved1", WORD),
+    ]
 
 
-_FTDCB._fields_ = [
-    # ftd2xx.h 698
-    ("DCBlength", DWORD),
-    ("BaudRate", DWORD),
-    ("fBinary", DWORD, 1),
-    ("fParity", DWORD, 1),
-    ("fOutxCtsFlow", DWORD, 1),
-    ("fOutxDsrFlow", DWORD, 1),
-    ("fDtrControl", DWORD, 2),
-    ("fDsrSensitivity", DWORD, 1),
-    ("fTXContinueOnXoff", DWORD, 1),
-    ("fOutX", DWORD, 1),
-    ("fInX", DWORD, 1),
-    ("fErrorChar", DWORD, 1),
-    ("fNull", DWORD, 1),
-    ("fRtsControl", DWORD, 2),
-    ("fAbortOnError", DWORD, 1),
-    ("fDummy2", DWORD, 17),
-    ("wReserved", WORD),
-    ("XonLim", WORD),
-    ("XoffLim", WORD),
-    ("ByteSize", BYTE),
-    ("Parity", BYTE),
-    ("StopBits", BYTE),
-    ("XonChar", c_char),
-    ("XoffChar", c_char),
-    ("ErrorChar", c_char),
-    ("EofChar", c_char),
-    ("EvtChar", c_char),
-    ("wReserved1", WORD),
-]
 FTDCB = _FTDCB
 LPFTDCB = POINTER(_FTDCB)
 # ftd2xx.h 729
+
+
 class _FTTIMEOUTS(Structure):
-    pass
+    _fields_ = [
+        # ftd2xx.h 729
+        ("ReadIntervalTimeout", DWORD),
+        ("ReadTotalTimeoutMultiplier", DWORD),
+        ("ReadTotalTimeoutConstant", DWORD),
+        ("WriteTotalTimeoutMultiplier", DWORD),
+        ("WriteTotalTimeoutConstant", DWORD),
+    ]
 
 
-_FTTIMEOUTS._fields_ = [
-    # ftd2xx.h 729
-    ("ReadIntervalTimeout", DWORD),
-    ("ReadTotalTimeoutMultiplier", DWORD),
-    ("ReadTotalTimeoutConstant", DWORD),
-    ("WriteTotalTimeoutMultiplier", DWORD),
-    ("WriteTotalTimeoutConstant", DWORD),
-]
 FTTIMEOUTS = _FTTIMEOUTS
 LPFTTIMEOUTS = POINTER(_FTTIMEOUTS)
 # ftd2xx.h 741
@@ -824,20 +768,21 @@ FT_W32_WaitCommEvent.argtypes = [FT_HANDLE, PULONG, LPOVERLAPPED]
 FT_W32_WaitCommEvent.__doc__ = """BOOL FT_W32_WaitCommEvent(FT_HANDLE ftHandle, PULONG pulEvent, LPOVERLAPPED lpOverlapped)
 ftd2xx.h:815"""
 # ftd2xx.h 822
+
+
 class _ft_device_list_info_node(Structure):
-    pass
+    _fields_ = [
+        # ftd2xx.h 822
+        ("Flags", ULONG),
+        ("Type", ULONG),
+        ("ID", ULONG),
+        ("LocId", DWORD),
+        ("SerialNumber", c_char * 16),
+        ("Description", c_char * 64),
+        ("ftHandle", FT_HANDLE),
+    ]
 
 
-_ft_device_list_info_node._fields_ = [
-    # ftd2xx.h 822
-    ("Flags", ULONG),
-    ("Type", ULONG),
-    ("ID", ULONG),
-    ("LocId", DWORD),
-    ("SerialNumber", c_char * 16),
-    ("Description", c_char * 64),
-    ("ftHandle", FT_HANDLE),
-]
 FT_DEVICE_LIST_INFO_NODE = _ft_device_list_info_node
 # ftd2xx.h 836
 FT_CreateDeviceInfoList = _libraries["ftd2xx.dll"].FT_CreateDeviceInfoList
@@ -890,150 +835,127 @@ FT_GetComPortNumber.restype = FT_STATUS
 FT_GetComPortNumber.argtypes = [FT_HANDLE, LPLONG]
 FT_GetComPortNumber.__doc__ = """FT_STATUS FT_GetComPortNumber(FT_HANDLE ftHandle, LPLONG lpdwComPortNumber)
 ftd2xx.h:899"""
+
 __all__ = [
-    "FT_DEVICE_232R",
-    "FT_STATUS",
-    "FT_GetLibraryVersion",
-    "VOID",
-    "FT_GetLatencyTimer",
-    "FT_EE_ProgramEx",
-    "FT_SetEventNotification",
-    "FT_GetDeviceInfoList",
-    "FT_OpenEx",
-    "FT_INVALID_ARGS",
-    "FT_W32_WriteFile",
-    "FT_StopInTask",
-    "_FTCOMSTAT",
-    "FT_GetDeviceInfo",
-    "FT_DEVICE_100AX",
-    "FT_W32_SetCommTimeouts",
-    "PFT_PROGRAM_DATA",
-    "FT_W32_WaitCommEvent",
-    "PUCHAR",
-    "FT_W32_ReadFile",
-    "FT_ResetDevice",
-    "FT_ResetPort",
-    "FT_GetStatus",
-    "FT_SetDataCharacteristics",
-    "FT_ClrRts",
-    "FT_W32_CancelIo",
-    "FT_EEPROM_WRITE_FAILED",
-    "FT_Close",
-    "FT_GetModemStatus",
-    "FT_W32_CreateFile",
-    "LPFTTIMEOUTS",
-    "FT_Write",
-    "FT_W32_GetCommModemStatus",
-    "FT_SetBreakOff",
-    "_FTTIMEOUTS",
-    "LPVOID",
-    "FT_DEVICE_BM",
-    "FT_SetBreakOn",
-    "FT_W32_GetCommState",
-    "FT_SetBaudRate",
-    "FT_SetResetPipeRetryCount",
-    "FTTIMEOUTS",
-    "FT_INVALID_PARAMETER",
-    "SHORT",
-    "FT_FAILED_TO_WRITE_DEVICE",
-    "FT_NOT_SUPPORTED",
-    "FT_ReadEE",
-    "FT_Open",
-    "FT_DEVICE_2232C",
-    "FT_W32_GetCommTimeouts",
+    # "FT_SetVIDPID",  # Linux/Darwin only
+    # "FT_GetVIDPID",  # Linux/Darwin only
     "FT_CreateDeviceInfoList",
-    "FT_SetRts",
-    "LPSECURITY_ATTRIBUTES",
-    "FT_DEVICE_AM",
-    "FT_SetBitMode",
-    "FT_DEVICE_NOT_OPENED_FOR_ERASE",
-    "FT_EE_Program",
-    "FT_W32_GetLastError",
-    "UCHAR",
-    "LPFTDCB",
-    "FT_DEVICE_NOT_FOUND",
-    "FT_W32_GetOverlappedResult",
-    "OVERLAPPED",
-    "INT",
-    "FT_SetDivisor",
-    "LPFTCOMSTAT",
-    "FT_W32_SetCommBreak",
-    "FT_DEVICE_NOT_OPENED_FOR_WRITE",
-    "PULONG",
-    "FT_EEPROM_NOT_PROGRAMMED",
-    "FT_ClrDtr",
-    "SYSTEMTIME",
-    "FT_SetDtr",
-    "LPWORD",
-    "FT_SetUSBParameters",
-    "FT_Read",
-    "CHAR",
-    "FT_DEVICE_NOT_OPENED",
-    "LPBYTE",
-    "FT_ListDevices",
-    "PFT_EVENT_HANDLER",
-    "FT_EE_UARead",
-    "FT_W32_SetupComm",
-    "FT_WriteEE",
-    "FT_INSUFFICIENT_RESOURCES",
-    "FT_EE_ReadEx",
-    "SECURITY_ATTRIBUTES",
-    "FT_W32_PurgeComm",
-    "FT_CyclePort",
-    "FT_SetDeadmanTimeout",
-    "FTDCB",
-    "FT_DEVICE_LIST_INFO_NODE",
-    "FT_GetEventStatus",
-    "FT_W32_CloseHandle",
-    "FT_EE_Read",
-    "FT_PROGRAM_DATA",
-    "_ft_device_list_info_node",
-    "FT_EEPROM_NOT_PRESENT",
-    "_FTDCB",
-    "FT_EEPROM_READ_FAILED",
-    "FT_HANDLE",
-    "USHORT",
-    "LPDWORD",
-    "FT_GetBitMode",
-    "FT_IoCtl",
-    "FT_SetChars",
-    "FT_RestartInTask",
-    "FT_SetLatencyTimer",
-    "LPTSTR",
-    "FT_Purge",
-    "FT_EE_UAWrite",
-    "LPBOOL",
-    "_SECURITY_ATTRIBUTES",
-    "FT_IO_ERROR",
-    "FT_W32_ClearCommBreak",
-    "FT_GetDriverVersion",
-    "timeval",
-    "LPOVERLAPPED",
+    "FT_GetDeviceInfoList",
     "FT_GetDeviceInfoDetail",
-    "FT_SetFlowControl",
-    "FT_INVALID_HANDLE",
-    "FT_EEPROM_ERASE_FAILED",
-    "FT_W32_EscapeCommFunction",
-    "PCHAR",
-    "FT_GetQueueStatus",
-    "ULONGLONG",
-    "FT_OK",
-    "FTCOMSTAT",
-    "FT_WaitOnMask",
+    "FT_ListDevices",
+    "FT_Open",
+    "FT_OpenEx",
+    "FT_Close",
+    "FT_Read",
+    "FT_Write",
+    "FT_SetBaudRate",
+    "FT_SetDivisor",
+    "FT_SetDataCharacteristics",
     "FT_SetTimeouts",
-    "_OVERLAPPED",
-    "FT_W32_ClearCommError",
+    "FT_SetFlowControl",
+    "FT_SetDtr",
+    "FT_ClrDtr",
+    "FT_SetRts",
+    "FT_ClrRts",
+    "FT_GetModemStatus",
+    "FT_GetQueueStatus",
+    "FT_GetDeviceInfo",
+    "FT_GetDriverVersion",  # Windows only
+    "FT_GetLibraryVersion",  # Windows only
+    "FT_GetComPortNumber",  # Windows only
+    "FT_GetStatus",
+    "FT_SetEventNotification",
+    "FT_SetChars",
+    "FT_SetBreakOn",
+    "FT_SetBreakOff",
+    "FT_Purge",
+    "FT_ResetDevice",
+    "FT_ResetPort",  # Windows only
+    "FT_CyclePort",  # Windows only
+    # "FT_Rescan", # Windows only, not implimented yet
+    # "FT_Reload",  # Windows only, not implimented yet
+    "FT_SetResetPipeRetryCount",  # Windows only
+    "FT_StopInTask",
+    "FT_RestartInTask",
+    "FT_SetDeadmanTimeout",
+    "FT_IoCtl",  # Undocumented
+    "FT_SetWaitMask",  # Undocumented
+    "FT_WaitOnMask",  # Undocumented
+    "FT_ReadEE",
+    "FT_WriteEE",
     "FT_EraseEE",
-    "FT_W32_SetCommState",
-    "FT_INVALID_BAUD_RATE",
-    "FT_SetWaitMask",
+    "FT_EE_Read",
+    "FT_EE_ReadEx",
+    "FT_EE_Program",
+    "FT_EE_ProgramEx",
     "FT_EE_UASize",
-    "FT_DEVICE_UNKNOWN",
-    "FT_DEVICE",
-    "FT_OTHER_ERROR",
-    "ft_program_data",
-    "PVOID",
+    "FT_EE_UARead",
+    "FT_EE_UAWrite",
+    # "FT_EEPROM_Read",  # Windows XP or later, not implimented
+    # "FT_EEPROM_Program",  # Windows XP or later, not implimented
+]
+
+# Extended API (does not apply to FT8U232AM or FT8U245AM devices)
+__all__ += [
+    "FT_SetLatencyTimer",
+    "FT_GetLatencyTimer",
+    "FT_SetBitMode",
+    "FT_GetBitMode",
+    "FT_SetUSBParameters",
+]
+
+# Win32 API (cross-platform)
+__all__ += [
+    "FT_W32_CreateFile",
+    "FT_W32_CloseHandle",
+    "FT_W32_ReadFile",
+    "FT_W32_WriteFile",
+    "FT_W32_GetOverlappedResult",
+    "FT_W32_EscapeCommFunction",
+    "FT_W32_GetCommModemStatus",
+    "FT_W32_SetupComm",
+    "FT_W32_SetCommState",
+    "FT_W32_GetCommState",
+    "FT_W32_SetCommTimeouts",
+    "FT_W32_GetCommTimeouts",
+    "FT_W32_SetCommBreak",
+    "FT_W32_ClearCommBreak",
     "FT_W32_SetCommMask",
-    "LPLONG",
-    "FT_GetComPortNumber",
+    # "FT_W32_GetCommMask",  # Not implimented yet
+    "FT_W32_WaitCommEvent",
+    "FT_W32_PurgeComm",
+    "FT_W32_GetLastError",
+    "FT_W32_ClearCommError",
+]
+
+# Data types
+__all__ += [
+    "FT_HANDLE",
+    "ft_program_data",
+    "BOOL",
+    "BYTE",
+    "DWORD",
+    "HANDLE",
+    "LPCSTR",
+    "ULONG",
+    "WORD",
+    "USHORT",
+    "PCHAR",
+    "LPWORD",
+    "PULONG",
+    "LPVOID",
+    "STRING",
+    "UCHAR",
+    "PUCHAR",
+    "PVOID",
+    "LPTSTR",
+    "LPDWORD",
+    "VOID",
+    "ULONGLONG",
+]
+
+# What are these?
+__all__ += [
+    "FT_W32_CancelIo",
+    "FT_GetEventStatus",
 ]

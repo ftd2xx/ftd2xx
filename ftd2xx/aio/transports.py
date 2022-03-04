@@ -151,6 +151,7 @@ class FTD2xxReadTransport(FTD2xxBaseTransport, asyncio.ReadTransport):
         super().__init__(loop, protocol_factory, ftd2xx_instance)
         self._max_read_size = 1024
         self._has_reader = False
+        self._modem = 0  # TODO
         loop.call_soon(self._ensure_reader)
 
     def _read_ready(self):
@@ -190,22 +191,31 @@ class FTD2xxReadTransport(FTD2xxBaseTransport, asyncio.ReadTransport):
         assert not self._has_reader
         super()._call_connection_lost(exc)
 
-    def _poll_read(self):
-        if self._has_reader and not self._closing:
+    async def _poll_read(self):
+        # TODO: Use events
+        while True:
             try:
-                self._has_reader = self._loop.call_later(
-                    self._poll_wait_time, self._poll_read
-                )
                 if self._ftd2xx.getQueueStatus():
                     self._read_ready()
+                await asyncio.sleep(self._poll_wait_time)
+            except DeviceError as exc:
+                self._fatal_error(exc, "Fatal write error on ftd2xx transport")
+
+    async def _poll_modem(self):
+        while True:
+            try:
+                modem = self._ftd2xx.getModemStatus()
+                if self._modem != modem:
+                    print(modem)
+                    self._modem = modem
+                await asyncio.sleep(self._poll_wait_time)
             except DeviceError as exc:
                 self._fatal_error(exc, "Fatal write error on ftd2xx transport")
 
     def _ensure_reader(self):
         if not self._has_reader and not self._closing:
-            self._has_reader = self._loop.call_later(
-                self._poll_wait_time, self._poll_read
-            )
+            self._has_reader = self._loop.create_task(self._poll_read())
+            self._loop.create_task(self._poll_modem())  # TODO
 
     def _remove_reader(self):
         if self._has_reader:
