@@ -6,11 +6,19 @@
 """Asyncio transports for FTDI D2XX devices."""
 from abc import abstractmethod
 import asyncio
-from ..ftd2xx import DeviceError
+from ..ftd2xx import DeviceError, LOGGER
 
 
 class FTD2xxBaseTransport(asyncio.BaseTransport):
     """Base class for FTDI D2XX transports."""
+
+    __slots__ = (
+        "_loop",
+        "_protocol",
+        "_ftd2xx",
+        "_closing",
+        "_poll_wait_time",
+    )
 
     def __init__(self, loop, protocol, ftd2xx_instance):
         super().__init__()
@@ -63,12 +71,12 @@ class FTD2xxBaseTransport(asyncio.BaseTransport):
         if not self._closing:
             self._close(None)
 
-    # TODO: Should implement??
-    # def set_protocol(self, protocol):
-    #     raise NotImplementedError
-    #
-    # def get_protocol(self):
-    #     raise NotImplementedError
+    def set_protocol(self, protocol):
+        # TODO: Is there a graceful procedure for setting protocol?
+        self._protocol = protocol
+
+    def get_protocol(self) -> asyncio.Protocol:
+        return self._protocol
 
     @abstractmethod
     def _shutdown(self):
@@ -147,11 +155,19 @@ class FTD2xxBaseTransport(asyncio.BaseTransport):
 class FTD2xxReadTransport(FTD2xxBaseTransport, asyncio.ReadTransport):
     """FTDI D2XX read-only transport."""
 
+    __slots__ = (
+        "_max_read_size",
+        "_has_reader",
+        "_is_reading",
+        "_modem",
+    )
+
     def __init__(self, loop, protocol_factory, ftd2xx_instance):
         super().__init__(loop, protocol_factory, ftd2xx_instance)
         self._max_read_size = 1024
         self._has_reader = False
-        self._modem = 0  # TODO
+        self._is_reading = False
+        self._modem = 0
         loop.call_soon(self._ensure_reader)
 
     def _read_ready(self):
@@ -162,6 +178,9 @@ class FTD2xxReadTransport(FTD2xxBaseTransport, asyncio.ReadTransport):
         else:
             if data:
                 self._protocol.data_received(data)
+
+    def is_reading(self) -> bool:
+        return self._is_reading
 
     def pause_reading(self):
         """Pause the receiving end of the transport.
@@ -196,7 +215,9 @@ class FTD2xxReadTransport(FTD2xxBaseTransport, asyncio.ReadTransport):
         while True:
             try:
                 if self._ftd2xx.getQueueStatus():
+                    self._is_reading = True
                     self._read_ready()
+                    self._is_reading = False
                 await asyncio.sleep(self._poll_wait_time)
             except DeviceError as exc:
                 self._fatal_error(exc, "Fatal write error on ftd2xx transport")
@@ -206,8 +227,9 @@ class FTD2xxReadTransport(FTD2xxBaseTransport, asyncio.ReadTransport):
             try:
                 modem = self._ftd2xx.getModemStatus()
                 if self._modem != modem:
-                    print(modem)
                     self._modem = modem
+                    LOGGER.debug(modem)
+                    # TODO: What can be done with the modem signals?
                 await asyncio.sleep(self._poll_wait_time)
             except DeviceError as exc:
                 self._fatal_error(exc, "Fatal write error on ftd2xx transport")
@@ -215,7 +237,7 @@ class FTD2xxReadTransport(FTD2xxBaseTransport, asyncio.ReadTransport):
     def _ensure_reader(self):
         if not self._has_reader and not self._closing:
             self._has_reader = self._loop.create_task(self._poll_read())
-            self._loop.create_task(self._poll_modem())  # TODO
+            self._loop.create_task(self._poll_modem())
 
     def _remove_reader(self):
         if self._has_reader:
@@ -225,6 +247,15 @@ class FTD2xxReadTransport(FTD2xxBaseTransport, asyncio.ReadTransport):
 
 class FTD2xxWriteTransport(FTD2xxBaseTransport, asyncio.WriteTransport):
     """FTDI D2XX write-only transport."""
+
+    __slots__ = (
+        "_write_buffer",
+        "_protocol_paused",
+        "_has_writer",
+        "_max_out_waiting",
+        "_high_water",
+        "_low_water",
+    )
 
     def __init__(self, loop, protocol_factory, ftd2xx_instance):
         super().__init__(loop, protocol_factory, ftd2xx_instance)
