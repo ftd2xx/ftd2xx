@@ -259,7 +259,6 @@ if sys.platform == "win32":
             )
         )
 
-
 else:
 
     def getVIDPID() -> Tuple[int, int]:
