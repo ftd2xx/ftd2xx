@@ -27,28 +27,6 @@ ft_program_data = _ft.ft_program_data
 
 LOGGER = logging.getLogger("ftd2xx")
 
-# msgs = [
-#     "OK",
-#     "INVALID_HANDLE",
-#     "DEVICE_NOT_FOUND",
-#     "DEVICE_NOT_OPENED",
-#     "IO_ERROR",
-#     "INSUFFICIENT_RESOURCES",
-#     "INVALID_PARAMETER",
-#     "INVALID_BAUD_RATE",
-#     "DEVICE_NOT_OPENED_FOR_ERASE",
-#     "DEVICE_NOT_OPENED_FOR_WRITE",
-#     "FAILED_TO_WRITE_DEVICE0",
-#     "EEPROM_READ_FAILED",
-#     "EEPROM_WRITE_FAILED",
-#     "EEPROM_ERASE_FAILED",
-#     "EEPROM_NOT_PRESENT",
-#     "EEPROM_NOT_PROGRAMMED",
-#     "INVALID_ARGS",
-#     "NOT_SUPPORTED",
-#     "OTHER_ERROR",
-# ]
-
 
 class DeviceError(Exception):
     """Exception class for status messages"""
