@@ -152,15 +152,8 @@ class FTD2xxBaseTransport(asyncio.BaseTransport):
         self._loop = None
 
 
-class FTD2xxReadTransport(FTD2xxBaseTransport, asyncio.ReadTransport):
-    """FTDI D2XX read-only transport."""
-
-    __slots__ = (
-        "_max_read_size",
-        "_has_reader",
-        "_is_reading",
-        "_modem",
-    )
+class AbstractFTD2xxReadTransport(FTD2xxBaseTransport, asyncio.ReadTransport):
+    """Abstract class for FTDI D2XX read-only transport."""
 
     def __init__(self, loop, protocol_factory, ftd2xx_instance):
         super().__init__(loop, protocol_factory, ftd2xx_instance)
@@ -245,17 +238,8 @@ class FTD2xxReadTransport(FTD2xxBaseTransport, asyncio.ReadTransport):
         self._has_reader = False
 
 
-class FTD2xxWriteTransport(FTD2xxBaseTransport, asyncio.WriteTransport):
-    """FTDI D2XX write-only transport."""
-
-    __slots__ = (
-        "_write_buffer",
-        "_protocol_paused",
-        "_has_writer",
-        "_max_out_waiting",
-        "_high_water",
-        "_low_water",
-    )
+class AbstractFTD2xxWriteTransport(FTD2xxBaseTransport, asyncio.WriteTransport):
+    """Abstract class for FTDI D2XX write-only transport."""
 
     def __init__(self, loop, protocol_factory, ftd2xx_instance):
         super().__init__(loop, protocol_factory, ftd2xx_instance)
@@ -459,5 +443,31 @@ class FTD2xxWriteTransport(FTD2xxBaseTransport, asyncio.WriteTransport):
         self._has_writer = False
 
 
-class FTD2xxTransport(FTD2xxReadTransport, FTD2xxWriteTransport):
+class FTD2xxReadTransport(AbstractFTD2xxReadTransport):
+    """FTDI D2XX read-only transport."""
+
+    __slots__ = (
+        "_max_read_size",
+        "_has_reader",
+        "_is_reading",
+        "_modem",
+    )
+
+
+class FTD2xxWriteTransport(AbstractFTD2xxWriteTransport):
+    """FTDI D2XX write-only transport."""
+
+    __slots__ = (
+        "_write_buffer",
+        "_protocol_paused",
+        "_has_writer",
+        "_max_out_waiting",
+        "_high_water",
+        "_low_water",
+    )
+
+
+class FTD2xxTransport(AbstractFTD2xxReadTransport, AbstractFTD2xxWriteTransport):
     """FTDI D2XX bidirectional transport."""
+
+    __slots__ = FTD2xxReadTransport.__slots__ + FTD2xxWriteTransport.__slots__
