@@ -77,9 +77,6 @@ _pthread_descr = POINTER(_pthread_descr_struct)
 # /usr/include/bits/pthreadtypes.h 42
 
 
-__pthread_cond_align_t = c_longlong
-
-
 # /usr/include/bits/pthreadtypes.h 70
 
 
@@ -89,7 +86,7 @@ class pthread_cond_t(Structure):
         ("__c_lock", _pthread_fastlock),
         ("__c_waiting", _pthread_descr),
         ("__padding", c_char * 16),
-        ("__align", __pthread_cond_align_t),
+        ("__align", c_longlong),
     ]
 
 
