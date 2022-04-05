@@ -41,4 +41,5 @@ if sys.platform == "win32":
     __all__ += ["w32CreateFile"]
 else:
     from .ftd2xx import getVIDPID, setVIDPID
+
     __all__ += ["getVIDPID", "setVIDPID"]
