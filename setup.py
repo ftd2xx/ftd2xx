@@ -57,6 +57,11 @@ setup(
     test_suite="ftd2xx.tests.t_ftd2xx",
     cmdclass={"build_py": build_py, "build_scripts": build_scripts},  # type: ignore
     # could also include long_description, download_url, classifiers, etc.
-    install_requires=(['pywin32; platform_system == "Windows"']),
+    install_requires=(
+        [
+            'pywin32; platform_system == "Windows"',
+            "typing_extensions; python_version < '3.8'",
+        ]
+    ),
     extras_require={"aio": ["async_timeout"]},
 )
