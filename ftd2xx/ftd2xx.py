@@ -9,7 +9,7 @@ import sys
 from builtins import range
 from contextlib import AbstractContextManager
 from types import TracebackType
-from typing import Callable, List, Optional, Tuple, Type, TypedDict, Union
+from typing import Any, Callable, List, Optional, Tuple, Type, Union
 import ctypes as c
 from . import defines
 
@@ -22,6 +22,11 @@ elif sys.platform == "darwin":
 else:
     raise Exception("Unknown platform")
 
+if sys.version_info >= (3, 8, 0):
+    from typing import TypedDict
+else:
+    from typing_extensions import TypedDict
+
 
 ft_program_data = _ft.ft_program_data
 
@@ -31,11 +36,11 @@ LOGGER = logging.getLogger("ftd2xx")
 class DeviceError(Exception):
     """Exception class for status messages"""
 
-    def __init__(self, message: Union[defines.Status, str]):
+    def __init__(self, message: Union[int, Any]):
         super().__init__()
-        try:
+        if isinstance(message, int):
             self.message = defines.Status(message).name
-        except ValueError:
+        else:
             self.message = str(message)
 
     def __str__(self):
@@ -148,7 +153,7 @@ def listDevices(flags: int = 0) -> Optional[List[bytes]]:
         # for i in range(devcount):
         #     ba[i] = c.c_char_p(bd[i])
         call_ft(_ft.FT_ListDevices, ba, c.byref(n), _ft.DWORD(defines.LIST_ALL | flags))
-        return [res for res in ba[:devcount]]  # type: ignore
+        return [res for res in ba[:devcount]]
 
     return None
 
@@ -240,7 +245,7 @@ def openEx(
 
 
 if sys.platform == "win32":
-    from win32con import GENERIC_READ, GENERIC_WRITE, OPEN_EXISTING  # type: ignore
+    from win32con import GENERIC_READ, GENERIC_WRITE, OPEN_EXISTING
 
     def w32CreateFile(
         name: bytes,

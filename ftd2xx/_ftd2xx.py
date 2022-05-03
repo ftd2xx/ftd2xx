@@ -30,6 +30,7 @@ from ctypes.wintypes import (
     LPLONG,
     PULONG,
     LPVOID,
+    LONG,
 )
 
 
@@ -39,7 +40,7 @@ PUCHAR = POINTER(c_ubyte)
 PVOID = c_void_p
 LPTSTR = STRING
 LPDWORD = POINTER(DWORD)
-VOID = None
+VOID: None = None
 ULONGLONG = c_ulonglong
 # WinTypes.h 38
 
@@ -89,7 +90,7 @@ except OSError:  # 32-bit, or 64-bit library with plain name
     try:
         _libraries["ftd2xx.dll"] = WinDLL("ftd2xx.dll")
     except OSError as e:
-        if e.winerror == 126:  # type: ignore
+        if e.winerror == 126:
             error_message = (
                 e.args[1] + "Unable to find D2XX DLL. "
                 "Please make sure that the directory containing your DLL is in "
