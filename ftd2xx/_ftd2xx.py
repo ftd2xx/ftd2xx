@@ -959,7 +959,7 @@ __all__ = [
     "FT_EE_UASize",
     "FT_EE_UARead",
     "FT_EE_UAWrite",
-    # "FT_EEPROM_Read",  # Windows XP or later, not implimented
+    "FT_EEPROM_Read",
     # "FT_EEPROM_Program",  # Windows XP or later, not implimented
 ]
 
@@ -1000,6 +1000,8 @@ __all__ += [
 __all__ += [
     "FT_HANDLE",
     "ft_program_data",
+    "ft_eeprom_header",
+    "ft_eeprom_x_series",
     "BOOL",
     "BYTE",
     "DWORD",
