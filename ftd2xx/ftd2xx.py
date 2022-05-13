@@ -589,6 +589,44 @@ class FTD2XX(AbstractContextManager):
             c.byref(b_read),
         )
         return bytes(buf[: b_read.value])
+    
+    def eepromRead(self):
+        """Get the program information from the EEPROM"""
+        #        if self.devInfo['type'] == 4:
+        #            version = 1
+        #        elif self.devInfo['type'] == 5:
+        #            version = 2
+        #        else:
+        #            version = 0
+        if self.type == defines.Device.FT_X_SERIES:
+            progdata = _ft.ft_eeprom_x_series()
+        else:
+            raise DeviceError("Only X series support is implemented! Sorry.")
+        progdata.common = _ft.ft_eeprom_header(deviceType=self.type)
+
+        Manufacturer = c.create_string_buffer(defines.MAX_DESCRIPTION_SIZE)
+        ManufacturerId = c.create_string_buffer(defines.MAX_DESCRIPTION_SIZE)
+        Description = c.create_string_buffer(defines.MAX_DESCRIPTION_SIZE)
+        SerialNumber = c.create_string_buffer(defines.MAX_DESCRIPTION_SIZE)
+        
+        call_ft(
+            _ft.FT_EEPROM_Read,
+            self.handle,
+            c.byref(progdata),
+            _ft.DWORD(c.sizeof(progdata)),
+            c.cast(Manufacturer, _ft.STRING),
+            c.cast(ManufacturerId, _ft.STRING),
+            c.cast(Description, _ft.STRING),
+            c.cast(SerialNumber, _ft.STRING),
+        )
+
+        return (
+            progdata,
+            Manufacturer.value,
+            ManufacturerId.value,
+            Description.value,
+            SerialNumber.value,
+        )
 
     def __exit__(
         self,
