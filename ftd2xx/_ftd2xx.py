@@ -453,6 +453,73 @@ FT_EE_UARead.restype = FT_STATUS
 FT_EE_UARead.argtypes = [FT_HANDLE, PUCHAR, DWORD, LPDWORD]
 FT_EE_UARead.__doc__ = """FT_STATUS FT_EE_UARead(FT_HANDLE ftHandle, PUCHAR pucData, DWORD dwDataLen, LPDWORD lpdwBytesRead)
 ftd2xx.h:548"""
+
+
+class ft_eeprom_header(Structure):
+    _fields_ = [
+        ("deviceType", FT_DEVICE),
+        ("VendorId", WORD),
+        ("ProductId", WORD),
+        ("SerNumEnable", UCHAR),
+        ("MaxPower", WORD),
+        ("SelfPowered", UCHAR),
+        ("RemoteWakeup", UCHAR),
+        ("PullDownEnable", UCHAR),
+    ]
+
+
+FT_EEPROM_HEADER = ft_eeprom_header
+PFT_EEPROM_HEADER = POINTER(ft_eeprom_header)
+
+
+class ft_eeprom_x_series(Structure):
+    _fields_ = [
+        ("common", FT_EEPROM_HEADER),
+        ("ACSlowSlew", UCHAR),
+        ("ACSchmittInput", UCHAR),
+        ("ACDriveCurrent", UCHAR),
+        ("ADSlowSlew", UCHAR),
+        ("ADSchmittInput", UCHAR),
+        ("ADDriveCurrent", UCHAR),
+        ("Cbus0", UCHAR),
+        ("Cbus1", UCHAR),
+        ("Cbus2", UCHAR),
+        ("Cbus3", UCHAR),
+        ("Cbus4", UCHAR),
+        ("Cbus5", UCHAR),
+        ("Cbus6", UCHAR),
+        ("InvertTXD", UCHAR),
+        ("InvertRXD", UCHAR),
+        ("InvertRTS", UCHAR),
+        ("InvertCTS", UCHAR),
+        ("InvertDTR", UCHAR),
+        ("InvertDSR", UCHAR),
+        ("InvertDCD", UCHAR),
+        ("InvertRI", UCHAR),
+        ("BCDEnable", UCHAR),
+        ("BCDForceCbusPWREN", UCHAR),
+        ("BCDDisableSleep", UCHAR),
+        ("I2CSlaveAddress", WORD),
+        ("I2CDeviceId", DWORD),
+        ("I2CDisableSchmitt", UCHAR),
+        ("FT1248Cpol", UCHAR),
+        ("FT1248Lsb", UCHAR),
+        ("FT1248FlowControl", UCHAR),
+        ("RS485EchoSuppress", UCHAR),
+        ("PowerSaveEnable", UCHAR),
+        ("DriverType", UCHAR),
+    ]
+
+
+FT_EEPROM_X_SERIES = ft_eeprom_x_series
+PFT_EEPROM_X_SERIES = POINTER(ft_eeprom_x_series)
+
+FT_EEPROM_Read = _libraries["ftd2xx.dll"].FT_EEPROM_Read
+FT_EEPROM_Read.restype = FT_STATUS
+# FT_EEPROM_Read(ftHandle, pData, DataSize, Manufacturer, ManufacturerId, Description, SerialNumber)
+FT_EEPROM_Read.argtypes = [FT_HANDLE, PVOID, DWORD, STRING, STRING, STRING, STRING]
+FT_EEPROM_Read.__doc__ = """FT_STATUS FT_EEPROM_Read(FT_HANDLE ftHandle, void * Data, DWORD DataSize, char * Manufacturer, char * ManufacturerId, char * Description, char * SerialNumber)"""
+
 # ftd2xx.h 554
 FT_SetLatencyTimer = _libraries["ftd2xx.dll"].FT_SetLatencyTimer
 FT_SetLatencyTimer.restype = FT_STATUS
