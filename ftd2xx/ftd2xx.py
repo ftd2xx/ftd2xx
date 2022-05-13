@@ -549,19 +549,17 @@ class FTD2XX(AbstractContextManager):
         ManufacturerId = c.create_string_buffer(defines.MAX_DESCRIPTION_SIZE)
         Description = c.create_string_buffer(defines.MAX_DESCRIPTION_SIZE)
         SerialNumber = c.create_string_buffer(defines.MAX_DESCRIPTION_SIZE)
-        progdata = ft_program_data(
-            **ProgramData(
-                Signature1=0,
-                Signature2=0xFFFFFFFF,
-                Version=2,
-                Manufacturer=c.addressof(Manufacturer),
-                ManufacturerId=c.addressof(ManufacturerId),
-                Description=c.addressof(Description),
-                SerialNumber=c.addressof(SerialNumber),
-            )
+        progdata = ProgramData(
+            Signature1=0,
+            Signature2=0xFFFFFFFF,
+            Version=2,
+            Manufacturer=c.cast(Manufacturer, _ft.STRING),
+            ManufacturerId=c.cast(ManufacturerId, _ft.STRING),
+            Description=c.cast(Description, _ft.STRING),
+            SerialNumber=c.cast(SerialNumber, _ft.STRING),
         )
 
-        call_ft(_ft.FT_EE_Read, self.handle, c.byref(progdata))
+        call_ft(_ft.FT_EE_Read, self.handle, c.byref(ft_program_data(progdata)))
         return progdata
 
     def eeUASize(self) -> int:
