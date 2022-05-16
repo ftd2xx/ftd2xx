@@ -125,6 +125,76 @@ class ProgramData(TypedDict, total=False):
     Cbus4: Union[_ft.UCHAR, int]
     RIsVCP: Union[_ft.UCHAR, int]
 
+    @classmethod
+    def from_struct(cls, data: c.Structure):
+        inst = cls()
+        for key in cls.__annotations__:
+            inst[key] = getattr(data, key)
+        return inst
+
+
+class ProgramData_Common(TypedDict, total=False):
+    deviceType: Union[_ft.FT_DEVICE, defines.Device]
+    VendorId: Union[_ft.WORD, int]
+    ProductId: Union[_ft.WORD, int]
+    SerNumEnable: Union[_ft.UCHAR, int]
+    MaxPower: Union[_ft.WORD, int]
+    SelfPowered: Union[_ft.UCHAR, int]
+    RemoteWakeup: Union[_ft.UCHAR, int]
+    PullDownEnable: Union[_ft.UCHAR, int]
+
+    @classmethod
+    def from_struct(cls, data: c.Structure):
+        inst = cls()
+        for key in cls.__annotations__:
+            inst[key] = getattr(data, key)
+        return inst
+
+
+class ProgramData_X_Series(TypedDict, total=False):
+    common: Union[_ft.FT_EEPROM_HEADER, ProgramData_Common]
+    ACSlowSlew: Union[_ft.UCHAR, int]
+    ACSchmittInput: Union[_ft.UCHAR, int]
+    ACDriveCurrent: Union[_ft.UCHAR, int]
+    ADSlowSlew: Union[_ft.UCHAR, int]
+    ADSchmittInput: Union[_ft.UCHAR, int]
+    ADDriveCurrent: Union[_ft.UCHAR, int]
+    Cbus0: Union[_ft.UCHAR, int]
+    Cbus1: Union[_ft.UCHAR, int]
+    Cbus2: Union[_ft.UCHAR, int]
+    Cbus3: Union[_ft.UCHAR, int]
+    Cbus4: Union[_ft.UCHAR, int]
+    Cbus5: Union[_ft.UCHAR, int]
+    Cbus6: Union[_ft.UCHAR, int]
+    InvertTXD: Union[_ft.UCHAR, int]
+    InvertRXD: Union[_ft.UCHAR, int]
+    InvertRTS: Union[_ft.UCHAR, int]
+    InvertCTS: Union[_ft.UCHAR, int]
+    InvertDTR: Union[_ft.UCHAR, int]
+    InvertDSR: Union[_ft.UCHAR, int]
+    InvertDCD: Union[_ft.UCHAR, int]
+    InvertRI: Union[_ft.UCHAR, int]
+    BCDEnable: Union[_ft.UCHAR, int]
+    BCDForceCbusPWREN: Union[_ft.UCHAR, int]
+    BCDDisableSleep: Union[_ft.UCHAR, int]
+    I2CSlaveAddress: Union[_ft.WORD, int]
+    I2CDeviceId: Union[_ft.DWORD, int]
+    I2CDisableSchmitt: Union[_ft.UCHAR, int]
+    FT1248Cpol: Union[_ft.UCHAR, int]
+    FT1248Lsb: Union[_ft.UCHAR, int]
+    FT1248FlowControl: Union[_ft.UCHAR, int]
+    RS485EchoSuppress: Union[_ft.UCHAR, int]
+    PowerSaveEnable: Union[_ft.UCHAR, int]
+    DriverType: Union[_ft.UCHAR, int]
+
+    @classmethod
+    def from_struct(cls, data: c.Structure):
+        inst = cls()
+        for key in cls.__annotations__:
+            inst[key] = getattr(data, key)
+        inst["common"] = ProgramData_Common.from_struct(data.common)
+        return inst
+
 
 def call_ft(function: Callable, *args):
     """Call an FTDI function and check the status. Raise exception on error"""
@@ -264,6 +334,7 @@ if sys.platform == "win32":
             )
         )
 
+
 else:
 
     def getVIDPID() -> Tuple[int, int]:
@@ -284,6 +355,7 @@ class FTD2XX(AbstractContextManager):
 
     handle: _ft.FT_HANDLE
     status: int
+    type: defines.Device
 
     def __init__(self, handle: _ft.FT_HANDLE, update: bool = True):
         """Create an instance of the FTD2XX class with the given device handle
@@ -550,19 +622,17 @@ class FTD2XX(AbstractContextManager):
         Description = c.create_string_buffer(defines.MAX_DESCRIPTION_SIZE)
         SerialNumber = c.create_string_buffer(defines.MAX_DESCRIPTION_SIZE)
         progdata = ft_program_data(
-            **ProgramData(
-                Signature1=0,
-                Signature2=0xFFFFFFFF,
-                Version=2,
-                Manufacturer=c.addressof(Manufacturer),
-                ManufacturerId=c.addressof(ManufacturerId),
-                Description=c.addressof(Description),
-                SerialNumber=c.addressof(SerialNumber),
-            )
+            Signature1=0,
+            Signature2=0xFFFFFFFF,
+            Version=2,
+            Manufacturer=c.cast(Manufacturer, _ft.STRING),
+            ManufacturerId=c.cast(ManufacturerId, _ft.STRING),
+            Description=c.cast(Description, _ft.STRING),
+            SerialNumber=c.cast(SerialNumber, _ft.STRING),
         )
 
         call_ft(_ft.FT_EE_Read, self.handle, c.byref(progdata))
-        return progdata
+        return ProgramData.from_struct(progdata)
 
     def eeUASize(self) -> int:
         """Get the EEPROM user area size"""
@@ -589,7 +659,7 @@ class FTD2XX(AbstractContextManager):
             c.byref(b_read),
         )
         return bytes(buf[: b_read.value])
-    
+
     def eepromRead(self):
         """Get the program information from the EEPROM"""
         #        if self.devInfo['type'] == 4:
@@ -608,7 +678,7 @@ class FTD2XX(AbstractContextManager):
         ManufacturerId = c.create_string_buffer(defines.MAX_DESCRIPTION_SIZE)
         Description = c.create_string_buffer(defines.MAX_DESCRIPTION_SIZE)
         SerialNumber = c.create_string_buffer(defines.MAX_DESCRIPTION_SIZE)
-        
+
         call_ft(
             _ft.FT_EEPROM_Read,
             self.handle,
@@ -619,9 +689,8 @@ class FTD2XX(AbstractContextManager):
             c.cast(Description, _ft.STRING),
             c.cast(SerialNumber, _ft.STRING),
         )
-
         return (
-            progdata,
+            ProgramData_X_Series.from_struct(progdata),
             Manufacturer.value,
             ManufacturerId.value,
             Description.value,

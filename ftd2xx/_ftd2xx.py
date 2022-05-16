@@ -999,6 +999,7 @@ __all__ += [
 # Data types
 __all__ += [
     "FT_HANDLE",
+    "FT_DEVICE",
     "ft_program_data",
     "ft_eeprom_header",
     "ft_eeprom_x_series",
