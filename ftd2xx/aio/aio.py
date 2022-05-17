@@ -5,6 +5,7 @@ from typing import Tuple
 import async_timeout
 
 from .. import defines, ftd2xx
+from .. import typedefs as _t
 from ..ftd2xx import _ft, call_ft
 
 
@@ -51,7 +52,7 @@ class FTD2XX(ftd2xx.FTD2XX):
 def open(dev: int = 0, update: bool = True):
     """Open a handle to a usb device by index and return an FTD2XX instance for
     it"""
-    h = _ft.FT_HANDLE()
+    h = _t.FT_HANDLE()
     call_ft(_ft.FT_Open, dev, c.byref(h))
     return FTD2XX(h, update=update)
 
@@ -62,6 +63,6 @@ def openEx(
     """Open a handle to a usb device by serial number(default), description or
     location(Windows only) depending on value of flags and return an FTD2XX
     instance for it"""
-    h = _ft.FT_HANDLE()
-    call_ft(_ft.FT_OpenEx, id_str, _ft.DWORD(flags), c.byref(h))
+    h = _t.FT_HANDLE()
+    call_ft(_ft.FT_OpenEx, id_str, _t.DWORD(flags), c.byref(h))
     return FTD2XX(h, update=update)

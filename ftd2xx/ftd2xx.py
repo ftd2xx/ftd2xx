@@ -117,7 +117,7 @@ class ProgramData(TypedDict, total=False):
     Cbus2: Union[_t.UCHAR, int]
     Cbus3: Union[_t.UCHAR, int]
     Cbus4: Union[_t.UCHAR, int]
-    RIsVCP: Union[_t.UCHAR, int]
+    RIsD2XX: Union[_t.UCHAR, int]
 
     @classmethod
     def from_struct(cls, data: c.Structure):

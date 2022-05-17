@@ -193,7 +193,7 @@ def FT_Write(
     ftHandle: FT_HANDLE,
     lpBuffer: LPVOID,
     dwBytesToWrite: DWORD,
-    lpdwBytesWritten,
+    lpdwBytesWritten: LPDWORD,
 ) -> FT_STATUS:
     """Write data to the device.
 
