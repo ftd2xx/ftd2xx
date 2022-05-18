@@ -11,6 +11,7 @@ from contextlib import AbstractContextManager
 from types import TracebackType
 from typing import Any, Callable, List, Optional, Tuple, Type, Union
 import ctypes as c
+from warnings import warn
 from . import defines
 from . import typedefs as _t
 from . import _ftd2xx as _ft
@@ -328,7 +329,6 @@ if sys.platform == "win32":
             )
         )
 
-
 else:
 
     def getVIDPID() -> Tuple[int, int]:
@@ -626,7 +626,7 @@ class FTD2XX(AbstractContextManager):
         )
 
         call_ft(_ft.FT_EE_Read, self.handle, c.byref(progdata))
-        return ProgramData.from_struct(progdata)
+        return progdata
 
     def eeUASize(self) -> int:
         """Get the EEPROM user area size"""
@@ -656,6 +656,7 @@ class FTD2XX(AbstractContextManager):
 
     def eepromRead(self):
         """Get the program information from the EEPROM"""
+        warn("Under development! Return type may change.")
         #        if self.devInfo['type'] == 4:
         #            version = 1
         #        elif self.devInfo['type'] == 5:
