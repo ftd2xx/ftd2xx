@@ -5,6 +5,7 @@ from builtins import int, str
 
 from .. import ftd2xx
 from ..ftd2xx import DeviceError
+from .. import typedefs
 
 
 class TestDeviceError(unittest.TestCase):
@@ -144,7 +145,7 @@ class TestFTD2XX(unittest.TestCase):
         pass
 
     def testeeRead(self):
-        self.assertIsInstance(self.device.eeRead(), ftd2xx._ft.ft_program_data)
+        self.assertIsInstance(self.device.eeRead(), typedefs.ft_program_data)
 
     def testeeUASize(self):
         self.assertIsInstance(self.device.eeUASize(), int)
