@@ -452,7 +452,7 @@ class FTD2XX(AbstractContextManager):
         call_ft(_ft.FT_GetLatencyTimer, self.handle, c.byref(latency))
         return latency.value
 
-    def setBitMode(self, mask: int, enable: bool):
+    def setBitMode(self, mask: int, enable: int):
         call_ft(_ft.FT_SetBitMode, self.handle, _ft.UCHAR(mask), _ft.UCHAR(enable))
 
     def getBitMode(self) -> int:
