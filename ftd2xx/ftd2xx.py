@@ -571,9 +571,9 @@ class FTD2XX(AbstractContextManager):
         return uasize.value
 
     def eeUAWrite(self, data: bytes) -> None:
-        """Write data to the EEPROM user area. data must be a string with
+        """Write data to the EEPROM user area. data must be a bytes object with
         appropriate byte values"""
-        buf = c.create_string_buffer(data)
+        buf = (c.c_ubyte*len(data)).from_buffer_copy(data)
         call_ft(_ft.FT_EE_UAWrite, self.handle, buf, len(data))
 
     def eeUARead(self, b_to_read: int) -> bytes:
