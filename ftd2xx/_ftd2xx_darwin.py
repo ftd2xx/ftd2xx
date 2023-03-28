@@ -47,6 +47,8 @@ __uint64_t = c_ulonglong
 __darwin_intptr_t = c_long
 __darwin_natural_t = c_uint
 __darwin_ct_rune_t = c_int
+
+
 # /usr/include/i386/_types.h 79
 class __mbstate_t(Union):
     pass
@@ -63,6 +65,8 @@ __darwin_clock_t = c_ulong
 __darwin_socklen_t = __uint32_t
 __darwin_ssize_t = c_long
 __darwin_time_t = c_long
+
+
 # /usr/include/sys/_types.h 64
 class _opaque_pthread_attr_t(Structure):
     pass
@@ -70,6 +74,8 @@ class _opaque_pthread_attr_t(Structure):
 
 __darwin_pthread_attr_t = _opaque_pthread_attr_t
 pthread_attr_t = __darwin_pthread_attr_t
+
+
 # /usr/include/sys/_types.h 65
 class _opaque_pthread_cond_t(Structure):
     pass
@@ -77,6 +83,8 @@ class _opaque_pthread_cond_t(Structure):
 
 __darwin_pthread_cond_t = _opaque_pthread_cond_t
 pthread_cond_t = __darwin_pthread_cond_t
+
+
 # /usr/include/sys/_types.h 66
 class _opaque_pthread_condattr_t(Structure):
     pass
@@ -86,6 +94,8 @@ __darwin_pthread_condattr_t = _opaque_pthread_condattr_t
 pthread_condattr_t = __darwin_pthread_condattr_t
 __darwin_pthread_key_t = c_ulong
 pthread_key_t = __darwin_pthread_key_t
+
+
 # /usr/include/sys/_types.h 67
 class _opaque_pthread_mutex_t(Structure):
     pass
@@ -93,6 +103,8 @@ class _opaque_pthread_mutex_t(Structure):
 
 __darwin_pthread_mutex_t = _opaque_pthread_mutex_t
 pthread_mutex_t = __darwin_pthread_mutex_t
+
+
 # /usr/include/sys/_types.h 68
 class _opaque_pthread_mutexattr_t(Structure):
     pass
@@ -100,6 +112,8 @@ class _opaque_pthread_mutexattr_t(Structure):
 
 __darwin_pthread_mutexattr_t = _opaque_pthread_mutexattr_t
 pthread_mutexattr_t = __darwin_pthread_mutexattr_t
+
+
 # /usr/include/sys/_types.h 69
 class _opaque_pthread_once_t(Structure):
     pass
@@ -107,6 +121,8 @@ class _opaque_pthread_once_t(Structure):
 
 __darwin_pthread_once_t = _opaque_pthread_once_t
 pthread_once_t = __darwin_pthread_once_t
+
+
 # /usr/include/sys/_types.h 70
 class _opaque_pthread_rwlock_t(Structure):
     pass
@@ -114,6 +130,8 @@ class _opaque_pthread_rwlock_t(Structure):
 
 __darwin_pthread_rwlock_t = _opaque_pthread_rwlock_t
 pthread_rwlock_t = __darwin_pthread_rwlock_t
+
+
 # /usr/include/sys/_types.h 71
 class _opaque_pthread_rwlockattr_t(Structure):
     pass
@@ -121,6 +139,8 @@ class _opaque_pthread_rwlockattr_t(Structure):
 
 __darwin_pthread_rwlockattr_t = _opaque_pthread_rwlockattr_t
 pthread_rwlockattr_t = __darwin_pthread_rwlockattr_t
+
+
 # /usr/include/sys/_types.h 72
 class _opaque_pthread_t(Structure):
     pass
@@ -175,6 +195,8 @@ pthread_attr_getinheritsched.restype = c_int
 pthread_attr_getinheritsched.argtypes = [POINTER(pthread_attr_t), POINTER(c_int)]
 pthread_attr_getinheritsched.__doc__ = """int pthread_attr_getinheritsched(unknown * p1, int * p2)
 /usr/include/pthread.h:252"""
+
+
 # /usr/include/sched.h 35
 class sched_param(Structure):
     pass
@@ -368,6 +390,8 @@ pthread_cond_signal.restype = c_int
 pthread_cond_signal.argtypes = [POINTER(pthread_cond_t)]
 pthread_cond_signal.__doc__ = """int pthread_cond_signal(pthread_cond_t * p1)
 /usr/include/pthread.h:286"""
+
+
 # /usr/include/sys/_structs.h 89
 class timespec(Structure):
     pass
@@ -965,6 +989,8 @@ sched_get_priority_max.restype = c_int
 sched_get_priority_max.argtypes = [c_int]
 sched_get_priority_max.__doc__ = """int sched_get_priority_max(int p1)
 /usr/include/sched.h:40"""
+
+
 # /usr/include/sys/_structs.h 184
 class fd_set(Structure):
     pass
@@ -998,6 +1024,8 @@ fd_set._fields_ = [
     # /usr/include/sys/_structs.h 184
     ("fds_bits", __int32_t * 32),
 ]
+
+
 # /usr/include/sys/_types.h 59
 class __darwin_pthread_handler_rec(Structure):
     pass
@@ -1071,6 +1099,8 @@ __darwin_uid_t = __uint32_t
 __darwin_useconds_t = __uint32_t
 __darwin_uuid_t = c_ubyte * 16
 suseconds_t = __darwin_suseconds_t
+
+
 # /usr/include/sys/time.h 93
 class itimerval(Structure):
     pass
@@ -1081,6 +1111,8 @@ itimerval._fields_ = [
     ("it_interval", timeval),
     ("it_value", timeval),
 ]
+
+
 # /usr/include/sys/time.h 144
 class timezone(Structure):
     pass
@@ -1091,6 +1123,8 @@ timezone._fields_ = [
     ("tz_minuteswest", c_int),
     ("tz_dsttime", c_int),
 ]
+
+
 # /usr/include/sys/time.h 187
 class clockinfo(Structure):
     pass
@@ -1162,6 +1196,8 @@ utimes.__doc__ = """int utimes(unknown * p1, unknown * p2)
 /usr/include/sys/time.h:217"""
 clock_t = __darwin_clock_t
 time_t = __darwin_time_t
+
+
 # /usr/include/time.h 90
 class tm(Structure):
     pass
@@ -1363,6 +1399,8 @@ PULONG = POINTER(ULONG)
 LPVOID = PVOID
 VOID = None
 ULONGLONG = c_ulonglong
+
+
 # /usr/local/include/WinTypes.h 36
 class _OVERLAPPED(Structure):
     pass
@@ -1378,6 +1416,8 @@ _OVERLAPPED._fields_ = [
 ]
 LPOVERLAPPED = POINTER(_OVERLAPPED)
 OVERLAPPED = _OVERLAPPED
+
+
 # /usr/local/include/WinTypes.h 44
 class _SECURITY_ATTRIBUTES(Structure):
     pass
@@ -1393,6 +1433,8 @@ LPSECURITY_ATTRIBUTES = POINTER(_SECURITY_ATTRIBUTES)
 SECURITY_ATTRIBUTES = _SECURITY_ATTRIBUTES
 SYSTEMTIME = timeval
 FILETIME = timeval
+
+
 # /usr/local/include/ftd2xx.h 64
 class _EVENT_HANDLE(Structure):
     pass
@@ -1657,6 +1699,8 @@ FT_EraseEE.restype = FT_STATUS
 FT_EraseEE.argtypes = [FT_HANDLE]
 FT_EraseEE.__doc__ = """FT_STATUS FT_EraseEE(FT_HANDLE ftHandle)
 /usr/local/include/ftd2xx.h:431"""
+
+
 # /usr/local/include/ftd2xx.h 436
 class ft_program_data(Structure):
     pass
@@ -1912,6 +1956,8 @@ FT_W32_CancelIo.restype = BOOL
 FT_W32_CancelIo.argtypes = [FT_HANDLE]
 FT_W32_CancelIo.__doc__ = """BOOL FT_W32_CancelIo(FT_HANDLE ftHandle)
 /usr/local/include/ftd2xx.h:688"""
+
+
 # /usr/local/include/ftd2xx.h 694
 class _FTCOMSTAT(Structure):
     pass
@@ -1932,6 +1978,8 @@ _FTCOMSTAT._fields_ = [
 ]
 LPFTCOMSTAT = POINTER(_FTCOMSTAT)
 FTCOMSTAT = _FTCOMSTAT
+
+
 # /usr/local/include/ftd2xx.h 707
 class _FTDCB(Structure):
     pass
@@ -1970,6 +2018,8 @@ _FTDCB._fields_ = [
 ]
 FTDCB = _FTDCB
 LPFTDCB = POINTER(_FTDCB)
+
+
 # /usr/local/include/ftd2xx.h 738
 class _FTTIMEOUTS(Structure):
     pass
@@ -2088,6 +2138,8 @@ FT_W32_WaitCommEvent.restype = BOOL
 FT_W32_WaitCommEvent.argtypes = [FT_HANDLE, PULONG, LPOVERLAPPED]
 FT_W32_WaitCommEvent.__doc__ = """BOOL FT_W32_WaitCommEvent(FT_HANDLE ftHandle, PULONG pulEvent, LPOVERLAPPED lpOverlapped)
 /usr/local/include/ftd2xx.h:824"""
+
+
 # /usr/local/include/ftd2xx.h 830
 class _ft_device_list_info_node(Structure):
     pass
