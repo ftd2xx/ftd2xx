@@ -554,10 +554,10 @@ class FTD2XX(AbstractContextManager):
                 Signature1=0,
                 Signature2=0xFFFFFFFF,
                 Version=2,
-                Manufacturer=c.addressof(Manufacturer),
-                ManufacturerId=c.addressof(ManufacturerId),
-                Description=c.addressof(Description),
-                SerialNumber=c.addressof(SerialNumber),
+                Manufacturer=c.cast(Manufacturer, c.c_char_p),
+                ManufacturerId=c.cast(ManufacturerId, c.c_char_p),
+                Description=c.cast(Description, c.c_char_p),
+                SerialNumber=c.cast(SerialNumber, c.c_char_p),
             )
         )
 
