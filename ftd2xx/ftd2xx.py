@@ -124,6 +124,51 @@ class ProgramData(TypedDict, total=False):
     Cbus3: Union[_ft.UCHAR, int]
     Cbus4: Union[_ft.UCHAR, int]
     RIsVCP: Union[_ft.UCHAR, int]
+    PullDownEnable7: Union[_ft.UCHAR, int]
+    SerNumEnable7: Union[_ft.UCHAR, int]
+    ALSlowSlew: Union[_ft.UCHAR, int]
+    ALSchmittInput: Union[_ft.UCHAR, int]
+    ALDriveCurrent: Union[_ft.UCHAR, int]
+    AHSlowSlew: Union[_ft.UCHAR, int]
+    AHSchmittInput: Union[_ft.UCHAR, int]
+    AHDriveCurrent: Union[_ft.UCHAR, int]
+    BLSlowSlew: Union[_ft.UCHAR, int]
+    BLSchmittInput: Union[_ft.UCHAR, int]
+    BLDriveCurrent: Union[_ft.UCHAR, int]
+    BHSlowSlew: Union[_ft.UCHAR, int]
+    BHSchmittInput: Union[_ft.UCHAR, int]
+    BHDriveCurrent: Union[_ft.UCHAR, int]
+    IFAIsFifo7: Union[_ft.UCHAR, int]
+    IFAIsFifoTar7: Union[_ft.UCHAR, int]
+    IFAIsFastSer7: Union[_ft.UCHAR, int]
+    AIsVCP7: Union[_ft.UCHAR, int]
+    IFBIsFifo7: Union[_ft.UCHAR, int]
+    IFBIsFifoTar7: Union[_ft.UCHAR, int]
+    IFBIsFastSer7: Union[_ft.UCHAR, int]
+    BIsVCP7: Union[_ft.UCHAR, int]
+    PowerSaveEnable: Union[_ft.UCHAR, int]
+    PullDownEnable8: Union[_ft.UCHAR, int]
+    SerNumEnable8: Union[_ft.UCHAR, int]
+    ASlowSlew: Union[_ft.UCHAR, int]
+    ASchmittInput: Union[_ft.UCHAR, int]
+    ADriveCurrent: Union[_ft.UCHAR, int]
+    BSlowSlew: Union[_ft.UCHAR, int]
+    BSchmittInput: Union[_ft.UCHAR, int]
+    BDriveCurrent: Union[_ft.UCHAR, int]
+    CSlowSlew: Union[_ft.UCHAR, int]
+    CSchmittInput: Union[_ft.UCHAR, int]
+    CDriveCurrent: Union[_ft.UCHAR, int]
+    DSlowSlew: Union[_ft.UCHAR, int]
+    DSchmittInput: Union[_ft.UCHAR, int]
+    DDriveCurrent: Union[_ft.UCHAR, int]
+    ARIIsTXDEN: Union[_ft.UCHAR, int]
+    BRIIsTXDEN: Union[_ft.UCHAR, int]
+    CRIIsTXDEN: Union[_ft.UCHAR, int]
+    DRIIsTXDEN: Union[_ft.UCHAR, int]
+    AIsVCP8: Union[_ft.UCHAR, int]
+    BIsVCP8: Union[_ft.UCHAR, int]
+    CIsVCP8: Union[_ft.UCHAR, int]
+    DIsVCP8: Union[_ft.UCHAR, int]
 
 
 def call_ft(function: Callable, *args):
@@ -553,7 +598,7 @@ class FTD2XX(AbstractContextManager):
             **ProgramData(
                 Signature1=0,
                 Signature2=0xFFFFFFFF,
-                Version=2,
+                Version=4,
                 Manufacturer=c.cast(Manufacturer, c.c_char_p),
                 ManufacturerId=c.cast(ManufacturerId, c.c_char_p),
                 Description=c.cast(Description, c.c_char_p),
