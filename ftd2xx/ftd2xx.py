@@ -4,6 +4,7 @@ _pythonic_ way. For full documentation please refer to the FTDI
 Programming Guide. This module is based on Pablo Bleyers d2xx module,
 except this uses ctypes instead of an extension approach.
 """
+from __future__ import annotations
 import logging
 import sys
 from builtins import range
@@ -253,16 +254,20 @@ def getDeviceInfoDetail(devnum: int = 0, update: bool = True) -> DeviceInfoDetai
     }
 
 
-def open(dev: int = 0, update: bool = True):  # pylint: disable=redefined-builtin
+def open(dev: int = 0, update: bool = True) -> FTD2XX:
     """Open a handle to a usb device by index and return an FTD2XX instance for
     it. Set update to False to avoid a slow call to createDeviceInfoList.
 
-    Args:
-        dev (int): Device number
-        update (bool): Set False to disable automatic call to createDeviceInfoList
+    :param dev: Device number
+    :param update: Set False to disable automatic call to createDeviceInfoList
+    :raises DeviceError: If device cannot be opened
 
-    Returns:
-        instance of FTD2XX instance if successful
+    :return: instance of FTD2XX instance if successful. Use it as a context manager
+    :rtype: FTD2XX
+
+    :example:
+        with open(0, False) as dev:
+            dev.write(b"Hello World")
     """
     h = _ft.FT_HANDLE()
     call_ft(_ft.FT_Open, dev, c.byref(h))
@@ -271,18 +276,24 @@ def open(dev: int = 0, update: bool = True):  # pylint: disable=redefined-builti
 
 def openEx(
     id_str: bytes, flags: int = defines.OPEN_BY_SERIAL_NUMBER, update: bool = True
-):
+) -> FTD2XX:
     """Open a handle to a usb device by serial number(default), description or
     location(Windows only) depending on value of flags and return an FTD2XX
     instance for it. Set update to False to avoid a slow call to createDeviceInfoList.
 
-    Args:
-        id_str (bytes): ID string from listDevices
-        flags (int) = FLAG (consult D2XX Guide). Defaults to OPEN_BY_SERIAL_NUMBER
-        update (bool): Set False to disable automatic call to createDeviceInfoList
+    :param id_str: ID string from listDevices
+    :type id_str: bytes
 
-    Returns:
-        instance of FTD2XX instance if successful
+    :param flags: Flag (consult D2XX Guide). Defaults to OPEN_BY_SERIAL_NUMBER
+
+    :param update: Set False to disable automatic call to createDeviceInfoList
+
+    :return: instance of FTD2XX instance if successful
+
+    :example:
+        with openEx("MyDevice", update=False) as dev:
+            dev.write(b"Hello World")
+
     """
     h = _ft.FT_HANDLE()
     call_ft(_ft.FT_OpenEx, id_str, _ft.DWORD(flags), c.byref(h))
@@ -325,7 +336,10 @@ else:
 
 
 class FTD2XX(AbstractContextManager):
-    """Class for communicating with an FTDI device"""
+    """Class for communicating with an FTDI device
+
+    Use :any:`open` or :any:`openEx` to create an instance of this class.
+    """
 
     handle: _ft.FT_HANDLE
     status: int
@@ -389,6 +403,7 @@ class FTD2XX(AbstractContextManager):
         )
 
     def setFlowControl(self, flowcontrol: int, xon: int = -1, xoff: int = -1):
+        """Set the flow control for UART"""
         if flowcontrol == defines.FLOW_XON_XOFF and (xon == -1 or xoff == -1):
             raise ValueError
         call_ft(
@@ -404,23 +419,29 @@ class FTD2XX(AbstractContextManager):
         call_ft(_ft.FT_ResetDevice, self.handle)
 
     def setDtr(self):
+        """Set the DTR (Data Terminal Ready) signal of the FTDI device."""
         call_ft(_ft.FT_SetDtr, self.handle)
 
     def clrDtr(self):
+        """Clear the DTR signal of the FTDI device."""
         call_ft(_ft.FT_ClrDtr, self.handle)
 
     def setRts(self):
+        """Set the RTS (Request To Send) signal of the FTDI device."""
         call_ft(_ft.FT_SetRts, self.handle)
 
     def clrRts(self):
+        """Clear the RTS signal of the FTDI device."""
         call_ft(_ft.FT_ClrRts, self.handle)
 
     def getModemStatus(self) -> defines.ModemStatus:
+        """Get the modem status of the FTDI device."""
         m = _ft.DWORD()
         call_ft(_ft.FT_GetModemStatus, self.handle, c.byref(m))
         return defines.ModemStatus(m.value & 0xFFFF)
 
     def setChars(self, evch: int, evch_en: int, erch: int, erch_en: int):
+        """Set the event and error characters for UART"""
         call_ft(
             _ft.FT_SetChars,
             self.handle,
@@ -431,14 +452,17 @@ class FTD2XX(AbstractContextManager):
         )
 
     def purge(self, mask: int = 0):
+        """Purge the receive and/or transmit buffers"""
         if not mask:
             mask = defines.PURGE_RX | defines.PURGE_TX
         call_ft(_ft.FT_Purge, self.handle, _ft.DWORD(mask))
 
     def setTimeouts(self, read: int, write: int):
+        """Set the read and write timeouts in milliseconds"""
         call_ft(_ft.FT_SetTimeouts, self.handle, _ft.DWORD(read), _ft.DWORD(write))
 
     def setDeadmanTimeout(self, timeout: int):
+        """Set the deadman timeout in milliseconds"""
         call_ft(_ft.FT_SetDeadmanTimeout, self.handle, _ft.DWORD(timeout))
 
     def getQueueStatus(self) -> int:
@@ -506,6 +530,7 @@ class FTD2XX(AbstractContextManager):
         return mask.value
 
     def setUSBParameters(self, in_tx_size: int, out_tx_size: int = 0):
+        """Set the USB request transfer sizes"""
         call_ft(
             _ft.FT_SetUSBParameters,
             self.handle,
@@ -552,9 +577,9 @@ class FTD2XX(AbstractContextManager):
         call_ft(_ft.FT_CyclePort, self.handle)
 
     def getDriverVersion(self) -> int:
-        drvver = _ft.DWORD()
-        call_ft(_ft.FT_GetDriverVersion, self.handle, c.byref(drvver))
-        return drvver.value
+        driver = _ft.DWORD()
+        call_ft(_ft.FT_GetDriverVersion, self.handle, c.byref(driver))
+        return driver.value
 
     def getComPortNumber(self) -> int:
         """Return a long representing the COM port number"""
@@ -641,6 +666,7 @@ class FTD2XX(AbstractContextManager):
         __exc_value: Optional[BaseException],
         __traceback: Optional[TracebackType],
     ) -> Optional[bool]:
+        """Close the device when exiting the context manager"""
         self.close()
         return super().__exit__(__exc_type, __exc_value, __traceback)
 

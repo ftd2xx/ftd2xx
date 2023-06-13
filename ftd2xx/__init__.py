@@ -1,10 +1,10 @@
 """
 Control FTDI USB chips.
 
-Open a handle using ftd2xx.open or ftd2xx.openEx and use the methods
-on the object thus returned.
-
-There are a few convenience functions too
+Use :any:`ftd2xx.open` or :any:`ftd2xx.openEx`.
+:example:
+    with open(0) as device:
+        device.write(b"Hello World!")
 """
 from __future__ import absolute_import
 
