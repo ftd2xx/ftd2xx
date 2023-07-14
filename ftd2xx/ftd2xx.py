@@ -258,14 +258,17 @@ def open(dev: int = 0, update: bool = True) -> FTD2XX:
     """Open a handle to a usb device by index and return an FTD2XX instance for
     it. Set update to False to avoid a slow call to createDeviceInfoList.
 
-    :param dev: Device number
-    :param update: Set False to disable automatic call to createDeviceInfoList
-    :raises DeviceError: If device cannot be opened
+    Args:
+        dev (int): The device number to open.
+        update (bool): Set to False to disable automatic call to createDeviceInfoList.
 
-    :return: instance of FTD2XX instance if successful. Use it as a context manager
-    :rtype: FTD2XX
+    Raises:
+        DeviceError: If the device cannot be opened.
 
-    :example:
+    Returns:
+        An instance of the FTD2XX class if successful. Use it as a context manager.
+
+    Example:
         with open(0, False) as dev:
             dev.write(b"Hello World")
     """
@@ -281,17 +284,19 @@ def openEx(
     location(Windows only) depending on value of flags and return an FTD2XX
     instance for it. Set update to False to avoid a slow call to createDeviceInfoList.
 
-    :param id_str: ID string from listDevices
-    :type id_str: bytes
+    Args:
+        id_str (bytes): The ID string from listDevices.
+        flags (int): Flag (consult D2XX Guide). Defaults to OPEN_BY_SERIAL_NUMBER.
+        update (bool): Set to False to disable automatic call to createDeviceInfoList.
 
-    :param flags: Flag (consult D2XX Guide). Defaults to OPEN_BY_SERIAL_NUMBER
+    Raises:
+        DeviceError: If the device cannot be opened.
 
-    :param update: Set False to disable automatic call to createDeviceInfoList
+    Returns:
+        An instance of the FTD2XX class if successful. Use it as a context manager.
 
-    :return: instance of FTD2XX instance if successful
-
-    :example:
-        with openEx("MyDevice", update=False) as dev:
+    Example:
+        with openEx(b"MyDevice", update=False) as dev:
             dev.write(b"Hello World")
 
     """
@@ -349,8 +354,7 @@ class FTD2XX(AbstractContextManager):
         and populate the device info in the instance dictionary.
 
         Args:
-            update (bool): Set False to disable automatic (slow) call to
-            createDeviceInfoList
+            update (bool): Set False to disable automatic (slow) call to            createDeviceInfoList
 
         """
         self.handle = handle

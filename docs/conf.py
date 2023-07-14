@@ -28,7 +28,7 @@ author = "@snmishra, @krister-ts"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["autoapi.extension"]
+extensions = ["autoapi.extension", "sphinx.ext.napoleon"]
 autoapi_type = "python"
 autoapi_dirs = ["../ftd2xx"]
 autoapi_ignore = ["_ftd2xx*"]
