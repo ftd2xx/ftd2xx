@@ -1,3 +1,16 @@
+[project]
+dynamic = ["version"]
+name = "ftd2xx"
+description = "Python interface to ftd2xx.dll from FTDI using ctypes based on d2xx by Pablo Bleyer"
+license = { file = "LICENSE" }
+keywords = ["ftd2xx", "d2xx", "ftdi"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+
+
 [tool.ruff]
 target-version = "py38"
 
@@ -13,8 +26,11 @@ extend-exclude = '''
 '''
 
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools", "wheel", "setuptools-git-versioning<2"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools-git-versioning]
+enabled = true
 
 
 [tool.mypy]
