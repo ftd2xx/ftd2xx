@@ -61,5 +61,4 @@ setup(
         ]
     ),
     extras_require={"aio": ["async_timeout"]},
-
 )
