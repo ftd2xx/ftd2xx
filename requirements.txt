@@ -1,3 +1,2 @@
-async_timeout
 pywin32; platform_system == "Windows"
 typing_extensions; python_version < '3.8'

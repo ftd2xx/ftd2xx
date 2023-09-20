@@ -63,5 +63,5 @@ setup(
             "typing_extensions; python_version < '3.8'",
         ]
     ),
-    extras_require={"aio": ["async_timeout"]},
+    extras_require={},
 )
