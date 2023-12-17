@@ -1,5 +1,5 @@
 [project]
-dynamic = ["version"]
+dynamic = ["version", "readme", "authors", "dependencies"]
 name = "ftd2xx"
 description = "Python interface to ftd2xx.dll from FTDI using ctypes based on d2xx by Pablo Bleyer"
 license = { file = "LICENSE" }
