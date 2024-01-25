@@ -340,7 +340,7 @@ else:
         return None
 
 
-class FTD2XX(AbstractContextManager):
+class FTD2XX(AbstractContextManager["FTD2XX"]):
     """Class for communicating with an FTDI device
 
     Use :any:`open` or :any:`openEx` to create an instance of this class.
