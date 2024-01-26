@@ -189,16 +189,11 @@ class TestGlobalFunctions(unittest.TestCase):
 
     def testopenEx(self):
         dev0 = None
-        try:
-            devices = ftd2xx.listDevices()
-            if devices is None:
-                raise DeviceError("Device not found")
-            dev0_id = devices[0]
-            dev0 = ftd2xx.openEx(dev0_id)
+        devices = ftd2xx.listDevices()
+        if devices is None:
+            raise DeviceError("Device not found")
+        dev0_id = devices[0]
+        with ftd2xx.openEx(dev0_id) as dev0:
             self.assertIsInstance(dev0, ftd2xx.FTD2XX)
             self.assertEqual(dev0.getDeviceInfo()["serial"], dev0_id)
-        except AssertionError:
-            raise
-        finally:
-            if dev0:
-                dev0.close()
+        assert dev0.status == 0
