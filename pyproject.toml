@@ -1,5 +1,5 @@
 [project]
-dynamic = ["version", "readme", "authors"]
+dynamic = ["version", "authors"]
 name = "ftd2xx"
 description = "Python interface to ftd2xx.dll from FTDI using ctypes based on d2xx by Pablo Bleyer"
 license = { file = "LICENSE" }
@@ -11,9 +11,14 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = ['pywin32; platform_system == "Windows"']
+readme = "README.rst"
 
 [project.optional-dependencies]
-dev = ["pytest", "sphinx", "furo", "sphinx-autoapi", "ruff"]
+dev = ["ruff"]
+
+[project.urls]
+Documentation = "https://ftd2xx.github.io/ftd2xx/"
+GitHub = "https://github.com/ftd2xx/ftd2xx"
 
 [build-system]
 requires = ["hatchling", "hatch-vcs"]
@@ -72,3 +77,10 @@ python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
 python_files = ["*/tests/t_*.py"]
 python_classes = "Test*"
 test_paths = ["ftd2xx/tests"]
+
+
+[tool.hatch.envs.docs]
+dependencies = ["sphinx", "furo", "sphinx-autoapi"]
+
+[tool.hatch.envs.docs.scripts]
+build = "make -C docs html"
