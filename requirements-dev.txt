@@ -1,5 +1,0 @@
-pytest
-sphinx
-furo
-sphinx-autoapi
-ruff

@@ -1,5 +1,5 @@
 [project]
-dynamic = ["version", "readme", "authors", "dependencies"]
+dynamic = ["version", "readme", "authors"]
 name = "ftd2xx"
 description = "Python interface to ftd2xx.dll from FTDI using ctypes based on d2xx by Pablo Bleyer"
 license = { file = "LICENSE" }
@@ -9,7 +9,21 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
 ]
+requires-python = ">=3.8"
+dependencies = ['pywin32; platform_system == "Windows"']
 
+[project.optional-dependencies]
+dev = ["pytest", "sphinx", "furo", "sphinx-autoapi", "ruff"]
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "ftd2xx/_version.py"
 
 [tool.ruff]
 target-version = "py38"
@@ -24,10 +38,6 @@ extend-exclude = '''
   | dist
 )/
 '''
-
-[build-system]
-requires = ["setuptools", "wheel", "setuptools-git-versioning<2"]
-build-backend = "setuptools.build_meta"
 
 [tool.setuptools-git-versioning]
 enabled = true
@@ -51,3 +61,14 @@ no_implicit_optional = true
 warn_unreachable = true
 warn_no_return = true
 exclude = ["typings", "ftd2xx/_ftd2xx_*.py"]
+
+[tool.hatch.envs.test]
+dependencies = ["pytest"]
+
+[[tool.hatch.envs.test.matrix]]
+python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
+
+[tool.pytest.ini_options]
+python_files = ["*/tests/t_*.py"]
+python_classes = "Test*"
+test_paths = ["ftd2xx/tests"]

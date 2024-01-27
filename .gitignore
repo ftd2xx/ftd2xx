@@ -7,3 +7,4 @@ ftd2xx_py3k.egg-info/
 Makefile
 .venv/
 docs/_build/
+_version.py
