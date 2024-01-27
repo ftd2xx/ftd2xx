@@ -20,6 +20,7 @@ from ctypes import (
     c_ushort,
     c_void_p,
 )
+from typing import List
 
 _libraries = {}
 _libraries["libftd2xx.so"] = CDLL("libftd2xx.so")
@@ -68,7 +69,7 @@ class _pthread_fastlock(Structure):
 
 
 class _pthread_descr_struct(Structure):
-    _fields_ = [
+    _fields_: List[tuple] = [
         # /usr/include/bits/pthreadtypes.h 35
     ]
 
@@ -131,7 +132,7 @@ LPDWORD = POINTER(DWORD)
 LPWORD = POINTER(WORD)
 PULONG = POINTER(ULONG)
 LPVOID = PVOID
-VOID = None
+VOID: None = None
 ULONGLONG = c_ulonglong
 # WinTypes.h 38
 

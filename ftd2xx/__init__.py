@@ -6,9 +6,17 @@ Use :any:`ftd2xx.open` or :any:`ftd2xx.openEx`.
     with open(0) as device:
         device.write(b"Hello World!")
 """
-from __future__ import absolute_import
 
 import sys
+
+try:
+    from _version import (
+        __version__ as __version__,
+        __version_tuple__ as __version_tuple__,
+    )
+except ImportError:
+    __version__ = "unknown"
+    __version_tuple__ = (0, 0, 0, "unknown", "unknown")
 
 from .ftd2xx import (
     FTD2XX,

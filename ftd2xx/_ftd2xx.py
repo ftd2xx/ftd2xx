@@ -79,11 +79,7 @@ _libraries = {}
 # If you need non-standard DLL directory, set FTD2XX_DLL_DIR to absoluate path to dll
 extra_dll_dir = os.environ.get("FTD2XX_DLL_DIR")
 if extra_dll_dir:
-    if sys.version_info >= (3, 8):
-        os.add_dll_directory(extra_dll_dir)
-    else:
-        os.environ.setdefault("PATH", "")
-        os.environ["PATH"] += os.pathsep + extra_dll_dir
+    os.add_dll_directory(extra_dll_dir)
 try:
     _libraries["ftd2xx.dll"] = WinDLL("ftd2xx64.dll")
 except OSError:  # 32-bit, or 64-bit library with plain name

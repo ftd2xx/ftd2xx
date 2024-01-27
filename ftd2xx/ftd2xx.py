@@ -5,13 +5,13 @@ Programming Guide. This module is based on Pablo Bleyers d2xx module,
 except this uses ctypes instead of an extension approach.
 """
 from __future__ import annotations
+
+import ctypes as c
 import logging
 import sys
-from builtins import range
-from contextlib import AbstractContextManager
 from types import TracebackType
-from typing import Any, Callable, List, Optional, Tuple, Type, Union
-import ctypes as c
+from typing import Any, Callable, ContextManager, TypedDict
+
 from . import defines
 
 if sys.platform == "win32":
@@ -23,11 +23,6 @@ elif sys.platform == "darwin":
 else:
     raise Exception("Unknown platform")
 
-if sys.version_info >= (3, 8, 0):
-    from typing import TypedDict
-else:
-    from typing_extensions import TypedDict
-
 
 ft_program_data = _ft.ft_program_data
 
@@ -37,7 +32,7 @@ LOGGER = logging.getLogger("ftd2xx")
 class DeviceError(Exception):
     """Exception class for status messages"""
 
-    def __init__(self, message: Union[int, Any]):
+    def __init__(self, message: int | Any):
         super().__init__()
         if isinstance(message, int):
             self.message = defines.Status(message).name
@@ -67,109 +62,109 @@ class DeviceInfo(TypedDict):
 
 
 class ProgramData(TypedDict, total=False):
-    Signature1: Union[_ft.DWORD, int]
-    Signature2: Union[_ft.DWORD, int]
-    Version: Union[_ft.DWORD, int]
-    VendorId: Union[_ft.WORD, int]
-    ProductId: Union[_ft.WORD, int]
-    Manufacturer: Union[_ft.STRING, int]
-    ManufacturerId: Union[_ft.STRING, int]
-    Description: Union[_ft.STRING, int]
-    SerialNumber: Union[_ft.STRING, int]
-    MaxPower: Union[_ft.WORD, int]
-    PnP: Union[_ft.WORD, int]
-    SelfPowered: Union[_ft.WORD, int]
-    RemoteWakeup: Union[_ft.WORD, int]
-    Rev4: Union[_ft.UCHAR, int]
-    IsoIn: Union[_ft.UCHAR, int]
-    IsoOut: Union[_ft.UCHAR, int]
-    PullDownEnable: Union[_ft.UCHAR, int]
-    SerNumEnable: Union[_ft.UCHAR, int]
-    USBVersionEnable: Union[_ft.UCHAR, int]
-    USBVersion: Union[_ft.WORD, int]
-    Rev5: Union[_ft.UCHAR, int]
-    IsoInA: Union[_ft.UCHAR, int]
-    IsoInB: Union[_ft.UCHAR, int]
-    IsoOutA: Union[_ft.UCHAR, int]
-    IsoOutB: Union[_ft.UCHAR, int]
-    PullDownEnable5: Union[_ft.UCHAR, int]
-    SerNumEnable5: Union[_ft.UCHAR, int]
-    USBVersionEnable5: Union[_ft.UCHAR, int]
-    USBVersion5: Union[_ft.WORD, int]
-    AIsHighCurrent: Union[_ft.UCHAR, int]
-    BIsHighCurrent: Union[_ft.UCHAR, int]
-    IFAIsFifo: Union[_ft.UCHAR, int]
-    IFAIsFifoTar: Union[_ft.UCHAR, int]
-    IFAIsFastSer: Union[_ft.UCHAR, int]
-    AIsVCP: Union[_ft.UCHAR, int]
-    IFBIsFifo: Union[_ft.UCHAR, int]
-    IFBIsFifoTar: Union[_ft.UCHAR, int]
-    IFBIsFastSer: Union[_ft.UCHAR, int]
-    BIsVCP: Union[_ft.UCHAR, int]
-    UseExtOsc: Union[_ft.UCHAR, int]
-    HighDriveIOs: Union[_ft.UCHAR, int]
-    EndpointSize: Union[_ft.UCHAR, int]
-    PullDownEnableR: Union[_ft.UCHAR, int]
-    SerNumEnableR: Union[_ft.UCHAR, int]
-    InvertTXD: Union[_ft.UCHAR, int]
-    InvertRXD: Union[_ft.UCHAR, int]
-    InvertRTS: Union[_ft.UCHAR, int]
-    InvertCTS: Union[_ft.UCHAR, int]
-    InvertDTR: Union[_ft.UCHAR, int]
-    InvertDSR: Union[_ft.UCHAR, int]
-    InvertDCD: Union[_ft.UCHAR, int]
-    InvertRI: Union[_ft.UCHAR, int]
-    Cbus0: Union[_ft.UCHAR, int]
-    Cbus1: Union[_ft.UCHAR, int]
-    Cbus2: Union[_ft.UCHAR, int]
-    Cbus3: Union[_ft.UCHAR, int]
-    Cbus4: Union[_ft.UCHAR, int]
-    RIsVCP: Union[_ft.UCHAR, int]
-    PullDownEnable7: Union[_ft.UCHAR, int]
-    SerNumEnable7: Union[_ft.UCHAR, int]
-    ALSlowSlew: Union[_ft.UCHAR, int]
-    ALSchmittInput: Union[_ft.UCHAR, int]
-    ALDriveCurrent: Union[_ft.UCHAR, int]
-    AHSlowSlew: Union[_ft.UCHAR, int]
-    AHSchmittInput: Union[_ft.UCHAR, int]
-    AHDriveCurrent: Union[_ft.UCHAR, int]
-    BLSlowSlew: Union[_ft.UCHAR, int]
-    BLSchmittInput: Union[_ft.UCHAR, int]
-    BLDriveCurrent: Union[_ft.UCHAR, int]
-    BHSlowSlew: Union[_ft.UCHAR, int]
-    BHSchmittInput: Union[_ft.UCHAR, int]
-    BHDriveCurrent: Union[_ft.UCHAR, int]
-    IFAIsFifo7: Union[_ft.UCHAR, int]
-    IFAIsFifoTar7: Union[_ft.UCHAR, int]
-    IFAIsFastSer7: Union[_ft.UCHAR, int]
-    AIsVCP7: Union[_ft.UCHAR, int]
-    IFBIsFifo7: Union[_ft.UCHAR, int]
-    IFBIsFifoTar7: Union[_ft.UCHAR, int]
-    IFBIsFastSer7: Union[_ft.UCHAR, int]
-    BIsVCP7: Union[_ft.UCHAR, int]
-    PowerSaveEnable: Union[_ft.UCHAR, int]
-    PullDownEnable8: Union[_ft.UCHAR, int]
-    SerNumEnable8: Union[_ft.UCHAR, int]
-    ASlowSlew: Union[_ft.UCHAR, int]
-    ASchmittInput: Union[_ft.UCHAR, int]
-    ADriveCurrent: Union[_ft.UCHAR, int]
-    BSlowSlew: Union[_ft.UCHAR, int]
-    BSchmittInput: Union[_ft.UCHAR, int]
-    BDriveCurrent: Union[_ft.UCHAR, int]
-    CSlowSlew: Union[_ft.UCHAR, int]
-    CSchmittInput: Union[_ft.UCHAR, int]
-    CDriveCurrent: Union[_ft.UCHAR, int]
-    DSlowSlew: Union[_ft.UCHAR, int]
-    DSchmittInput: Union[_ft.UCHAR, int]
-    DDriveCurrent: Union[_ft.UCHAR, int]
-    ARIIsTXDEN: Union[_ft.UCHAR, int]
-    BRIIsTXDEN: Union[_ft.UCHAR, int]
-    CRIIsTXDEN: Union[_ft.UCHAR, int]
-    DRIIsTXDEN: Union[_ft.UCHAR, int]
-    AIsVCP8: Union[_ft.UCHAR, int]
-    BIsVCP8: Union[_ft.UCHAR, int]
-    CIsVCP8: Union[_ft.UCHAR, int]
-    DIsVCP8: Union[_ft.UCHAR, int]
+    Signature1: _ft.DWORD | int
+    Signature2: _ft.DWORD | int
+    Version: _ft.DWORD | int
+    VendorId: _ft.WORD | int
+    ProductId: _ft.WORD | int
+    Manufacturer: _ft.STRING | int
+    ManufacturerId: _ft.STRING | int
+    Description: _ft.STRING | int
+    SerialNumber: _ft.STRING | int
+    MaxPower: _ft.WORD | int
+    PnP: _ft.WORD | int
+    SelfPowered: _ft.WORD | int
+    RemoteWakeup: _ft.WORD | int
+    Rev4: _ft.UCHAR | int
+    IsoIn: _ft.UCHAR | int
+    IsoOut: _ft.UCHAR | int
+    PullDownEnable: _ft.UCHAR | int
+    SerNumEnable: _ft.UCHAR | int
+    USBVersionEnable: _ft.UCHAR | int
+    USBVersion: _ft.WORD | int
+    Rev5: _ft.UCHAR | int
+    IsoInA: _ft.UCHAR | int
+    IsoInB: _ft.UCHAR | int
+    IsoOutA: _ft.UCHAR | int
+    IsoOutB: _ft.UCHAR | int
+    PullDownEnable5: _ft.UCHAR | int
+    SerNumEnable5: _ft.UCHAR | int
+    USBVersionEnable5: _ft.UCHAR | int
+    USBVersion5: _ft.WORD | int
+    AIsHighCurrent: _ft.UCHAR | int
+    BIsHighCurrent: _ft.UCHAR | int
+    IFAIsFifo: _ft.UCHAR | int
+    IFAIsFifoTar: _ft.UCHAR | int
+    IFAIsFastSer: _ft.UCHAR | int
+    AIsVCP: _ft.UCHAR | int
+    IFBIsFifo: _ft.UCHAR | int
+    IFBIsFifoTar: _ft.UCHAR | int
+    IFBIsFastSer: _ft.UCHAR | int
+    BIsVCP: _ft.UCHAR | int
+    UseExtOsc: _ft.UCHAR | int
+    HighDriveIOs: _ft.UCHAR | int
+    EndpointSize: _ft.UCHAR | int
+    PullDownEnableR: _ft.UCHAR | int
+    SerNumEnableR: _ft.UCHAR | int
+    InvertTXD: _ft.UCHAR | int
+    InvertRXD: _ft.UCHAR | int
+    InvertRTS: _ft.UCHAR | int
+    InvertCTS: _ft.UCHAR | int
+    InvertDTR: _ft.UCHAR | int
+    InvertDSR: _ft.UCHAR | int
+    InvertDCD: _ft.UCHAR | int
+    InvertRI: _ft.UCHAR | int
+    Cbus0: _ft.UCHAR | int
+    Cbus1: _ft.UCHAR | int
+    Cbus2: _ft.UCHAR | int
+    Cbus3: _ft.UCHAR | int
+    Cbus4: _ft.UCHAR | int
+    RIsVCP: _ft.UCHAR | int
+    PullDownEnable7: _ft.UCHAR | int
+    SerNumEnable7: _ft.UCHAR | int
+    ALSlowSlew: _ft.UCHAR | int
+    ALSchmittInput: _ft.UCHAR | int
+    ALDriveCurrent: _ft.UCHAR | int
+    AHSlowSlew: _ft.UCHAR | int
+    AHSchmittInput: _ft.UCHAR | int
+    AHDriveCurrent: _ft.UCHAR | int
+    BLSlowSlew: _ft.UCHAR | int
+    BLSchmittInput: _ft.UCHAR | int
+    BLDriveCurrent: _ft.UCHAR | int
+    BHSlowSlew: _ft.UCHAR | int
+    BHSchmittInput: _ft.UCHAR | int
+    BHDriveCurrent: _ft.UCHAR | int
+    IFAIsFifo7: _ft.UCHAR | int
+    IFAIsFifoTar7: _ft.UCHAR | int
+    IFAIsFastSer7: _ft.UCHAR | int
+    AIsVCP7: _ft.UCHAR | int
+    IFBIsFifo7: _ft.UCHAR | int
+    IFBIsFifoTar7: _ft.UCHAR | int
+    IFBIsFastSer7: _ft.UCHAR | int
+    BIsVCP7: _ft.UCHAR | int
+    PowerSaveEnable: _ft.UCHAR | int
+    PullDownEnable8: _ft.UCHAR | int
+    SerNumEnable8: _ft.UCHAR | int
+    ASlowSlew: _ft.UCHAR | int
+    ASchmittInput: _ft.UCHAR | int
+    ADriveCurrent: _ft.UCHAR | int
+    BSlowSlew: _ft.UCHAR | int
+    BSchmittInput: _ft.UCHAR | int
+    BDriveCurrent: _ft.UCHAR | int
+    CSlowSlew: _ft.UCHAR | int
+    CSchmittInput: _ft.UCHAR | int
+    CDriveCurrent: _ft.UCHAR | int
+    DSlowSlew: _ft.UCHAR | int
+    DSchmittInput: _ft.UCHAR | int
+    DDriveCurrent: _ft.UCHAR | int
+    ARIIsTXDEN: _ft.UCHAR | int
+    BRIIsTXDEN: _ft.UCHAR | int
+    CRIIsTXDEN: _ft.UCHAR | int
+    DRIIsTXDEN: _ft.UCHAR | int
+    AIsVCP8: _ft.UCHAR | int
+    BIsVCP8: _ft.UCHAR | int
+    CIsVCP8: _ft.UCHAR | int
+    DIsVCP8: _ft.UCHAR | int
 
 
 def call_ft(function: Callable, *args):
@@ -179,7 +174,7 @@ def call_ft(function: Callable, *args):
         raise DeviceError(status)
 
 
-def listDevices(flags: int = 0) -> Optional[List[bytes]]:
+def listDevices(flags: int = 0) -> list[bytes] | None:
     """Return a list of serial numbers(default), descriptions or
     locations (Windows only) of the connected FTDI devices depending on value
     of flags"""
@@ -327,7 +322,7 @@ if sys.platform == "win32":
 
 else:
 
-    def getVIDPID() -> Tuple[int, int]:
+    def getVIDPID() -> tuple[int, int]:
         """Linux only. Get the VID and PID of the device"""
         vid = _ft.DWORD()
         pid = _ft.DWORD()
@@ -340,7 +335,7 @@ else:
         return None
 
 
-class FTD2XX(AbstractContextManager["FTD2XX"]):
+class FTD2XX(ContextManager["FTD2XX"]):
     """Class for communicating with an FTDI device
 
     Use :any:`open` or :any:`openEx` to create an instance of this class.
@@ -595,7 +590,7 @@ class FTD2XX(AbstractContextManager["FTD2XX"]):
             raise Exception("FT_GetComPortNumber is only available on windows") from exc
         return m.value
 
-    def eeProgram(self, progdata: Optional[ft_program_data] = None, **kwds) -> None:
+    def eeProgram(self, progdata: _ft.ft_program_data | None = None, **kwds) -> None:
         """Program the EEPROM with custom data. If SerialNumber is null, a new
         serial number is generated from ManufacturerId"""
         if progdata is None:
@@ -611,7 +606,7 @@ class FTD2XX(AbstractContextManager["FTD2XX"]):
         progdata.Version = _ft.DWORD(2)
         call_ft(_ft.FT_EE_Program, self.handle, progdata)
 
-    def eeRead(self) -> ft_program_data:
+    def eeRead(self) -> _ft.ft_program_data:
         """Get the program information from the EEPROM"""
         #        if self.devInfo['type'] == 4:
         #            version = 1
@@ -667,10 +662,10 @@ class FTD2XX(AbstractContextManager["FTD2XX"]):
 
     def __exit__(
         self,
-        __exc_type: Optional[Type[BaseException]],
-        __exc_value: Optional[BaseException],
-        __traceback: Optional[TracebackType],
-    ) -> Optional[bool]:
+        __exc_type: type[BaseException] | None,
+        __exc_value: BaseException | None,
+        __traceback: TracebackType | None,
+    ) -> bool | None:
         """Close the device when exiting the context manager"""
         self.close()
         return super().__exit__(__exc_type, __exc_value, __traceback)
