@@ -76,7 +76,7 @@ python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
 [tool.pytest.ini_options]
 python_files = ["*/tests/t_*.py"]
 python_classes = "Test*"
-test_paths = ["ftd2xx/tests"]
+testpaths = ["ftd2xx/tests"]
 
 
 [tool.hatch.envs.docs]
