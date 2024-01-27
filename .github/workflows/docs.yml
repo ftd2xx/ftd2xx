@@ -22,12 +22,12 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt -r requirements-dev.txt
+          pip install hatch
 
       - id: build
         name: Build docs
         run: |
-          make -C docs html
+          hatch run docs:build
           echo "artifact=docs/_build/html" >> $GITHUB_OUTPUT
 
       - name: Setup Pages
