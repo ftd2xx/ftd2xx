@@ -178,13 +178,10 @@ class TestGlobalFunctions(unittest.TestCase):
         self.assertIsInstance(ftd2xx.getDeviceInfoDetail(), dict)
 
     def testopen(self):
-        try:
-            device = ftd2xx.open()
+        with ftd2xx.open() as device:
             self.assertIsInstance(device, ftd2xx.FTD2XX)
-        except AssertionError:
-            raise
-        else:
-            device.close()
+            assert device.status != 0
+        assert device.status == 0
 
     def testopenEx(self):
         dev0 = None
