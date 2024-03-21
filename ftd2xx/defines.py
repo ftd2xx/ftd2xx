@@ -153,11 +153,30 @@ PARITY_EVEN = 2
 PARITY_MARK = 3
 PARITY_SPACE = 4
 
+
+@unique
+class Parity(IntEnum):
+    PARITY_NONE = 0
+    PARITY_ODD = 1
+    PARITY_EVEN = 2
+    PARITY_MARK = 3
+    PARITY_SPACE = 4
+
+
 # Flow Control
 FLOW_NONE = 0x0000
 FLOW_RTS_CTS = 0x0100
 FLOW_DTR_DSR = 0x0200
 FLOW_XON_XOFF = 0x0400
+
+
+@unique
+class FlowControl(IntFlag):
+    FLOW_NONE = 0x0000
+    FLOW_RTS_CTS = 0x0100
+    FLOW_DTR_DSR = 0x0200
+    FLOW_XON_XOFF = 0x0400
+
 
 # Purge RX and TX Buffers
 PURGE_RX = 1
@@ -169,3 +188,107 @@ EVENT_MODEM_STATUS = 2
 EVENT_LINE_STATUS = 4
 
 MAX_DESCRIPTION_SIZE = 256
+
+
+@unique
+class BitMode(IntFlag):
+    FT_BITMODE_RESET = 0x00
+    FT_BITMODE_ASYNC_BITBANG = 0x01
+    FT_BITMODE_MPSSE = 0x02
+    FT_BITMODE_SYNC_BITBANG = 0x04
+    FT_BITMODE_MCU_HOST = 0x08
+    FT_BITMODE_FAST_SERIAL = 0x10
+    FT_BITMODE_CBUS_BITBANG = 0x20
+    FT_BITMODE_SYNC_FIFO = 0x40
+
+
+@unique
+class FT232R_CBUS_EEPROM_OPTION(IntEnum):
+    FT_232R_CBUS_TXDEN = 0x00
+    FT_232R_CBUS_PWRON = 0x01
+    FT_232R_CBUS_RXLED = 0x02
+    FT_232R_CBUS_TXLED = 0x03
+    FT_232R_CBUS_TXRXLED = 0x04
+    FT_232R_CBUS_SLEEP = 0x05
+    FT_232R_CBUS_CLK48 = 0x06
+    FT_232R_CBUS_CLK24 = 0x07
+    FT_232R_CBUS_CLK12 = 0x08
+    FT_232R_CBUS_CLK6 = 0x09
+    FT_232R_CBUS_IOMODE = 0x0A
+    FT_232R_CBUS_BITBANG_WR = 0x0B
+    FT_232R_CBUS_BITBANG_RD = 0x0C
+
+
+@unique
+class FT232H_CBUS_EEPROM_OPTIONS(IntEnum):
+    FT_232H_CBUS_TRISTATE = 0x00
+    FT_232H_CBUS_RXLED = 0x01
+    FT_232H_CBUS_TXLED = 0x02
+    FT_232H_CBUS_TXRXLED = 0x03
+    FT_232H_CBUS_PWREN = 0x04
+    FT_232H_CBUS_SLEEP = 0x05
+    FT_232H_CBUS_DRIVE_0 = 0x06
+    FT_232H_CBUS_DRIVE_1 = 0x07
+    FT_232H_CBUS_IOMODE = 0x08
+    FT_232H_CBUS_TXDEN = 0x09
+    FT_232H_CBUS_CLK30 = 0x0A
+    FT_232H_CBUS_CLK15 = 0x0B
+    FT_232H_CBUS_CLK7_5 = 0x0C
+
+
+@unique
+class FT_X_Series_CBUS_Options(IntEnum):
+    FT_X_SERIES_CBUS_TRISTATE = 0x00
+    FT_X_SERIES_CBUS_RXLED = 0x01
+    FT_X_SERIES_CBUS_TXLED = 0x02
+    FT_X_SERIES_CBUS_TXRXLED = 0x03
+    FT_X_SERIES_CBUS_PWREN = 0x04
+    FT_X_SERIES_CBUS_SLEEP = 0x05
+    FT_X_SERIES_CBUS_DRIVE_0 = 0x06
+    FT_X_SERIES_CBUS_DRIVE_1 = 0x07
+    FT_X_SERIES_CBUS_IOMODE = 0x08
+    FT_X_SERIES_CBUS_TXDEN = 0x09
+    FT_X_SERIES_CBUS_CLK24 = 0x0A
+    FT_X_SERIES_CBUS_CLK12 = 0x0B
+    FT_X_SERIES_CBUS_CLK6 = 0x0C
+    FT_X_SERIES_CBUS_BCD_CHARGER = 0x0D
+    FT_X_SERIES_CBUS_BCD_CHARGER_N = 0x0E
+    FT_X_SERIES_CBUS_I2C_TXE = 0x0F
+    FT_X_SERIES_CBUS_I2C_RXF = 0x10
+    FT_X_SERIES_CBUS_VBUS_SENSE = 0x11
+    FT_X_SERIES_CBUS_BITBANG_WR = 0x12
+    FT_X_SERIES_CBUS_BITBANG_RD = 0x13
+    FT_X_SERIES_CBUS_TIMESTAMP = 0x14
+    FT_X_SERIES_CBUS_KEEP_AWAKE = 0x15
+
+
+OPEN_EXISTING = 3
+FILE_ATTRIBUTE_NORMAL = 0x00000080
+FILE_FLAG_OVERLAPPED = 0x40000000
+GENERIC_READ = 0x80000000
+GENERIC_WRITE = 0x40000000
+
+CLRDTR = 6  # Clear the DTR signal
+CLRRTS = 4  # Clear the RTS signal
+SETDTR = 5  # Set the DTR signal
+SETRTS = 3  # Set the RTS signal
+SETBREAK = 8  # Set the BREAK condition
+CLRBREAK = 9  # Clear the BREAK condition
+MS_CTS_ON = 0x0010  # Clear To Send (CTS) is on
+MS_DSR_ON = 0x0020  # Data Set Ready (DSR) is on
+MS_RING_ON = 0x0040  # Ring Indicator (RI) is on
+MS_RLSD_ON = 0x0080  # Receive Line Signal Detect (RLSD) is on
+
+EV_BREAK = 0x0040  # BREAK condition detected
+EV_CTS = 0x0008  # Change in Clear To Send (CTS)
+EV_DSR = 0x0010  # Change in Data Set Ready (DSR)
+EV_ERR = 0x0080  # Error in line status
+EV_RING = 0x0100  # Change in Ring Indicator (RI)
+EV_RLSD = 0x0020  # Change in Receive Line Signal Detect (RLSD)
+EV_RXCHAR = 0x0001  # Character received
+EV_RXFLAG = 0x0002  # Event character received
+EV_TXEMPTY = 0x0004  # Transmitter empty
+PURGE_TXABORT = 0x0001  # Terminate outstanding overlapped writes
+PURGE_RXABORT = 0x0002  # Terminate outstanding overlapped reads
+PURGE_TXCLEAR = 0x0004  # Clear the transmit buffer
+PURGE_RXCLEAR = 0x0008  # Clear the receive buffer
