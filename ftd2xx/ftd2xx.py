@@ -4,6 +4,7 @@ _pythonic_ way. For full documentation please refer to the FTDI
 Programming Guide. This module is based on Pablo Bleyers d2xx module,
 except this uses ctypes instead of an extension approach.
 """
+
 from __future__ import annotations
 
 import ctypes as c
@@ -41,6 +42,9 @@ class DeviceError(Exception):
 
     def __str__(self):
         return self.message
+
+    def __reduce__(self):
+        return type(self), (self.message,)
 
 
 class DeviceInfoDetail(TypedDict):
